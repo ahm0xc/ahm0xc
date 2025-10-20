@@ -1,0 +1,29 @@
+{
+  "name": "ahm0xc",
+  "version": "0.0.1",
+  "type": "module",
+  "packageManager": "bun@1.3.0",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "check": "npm run check-types && npm run fmt:check",
+    "check-types": "turbo check-types",
+    "fmt": "prettier --write \"apps/**/*.{ts,tsx,js,jsx,mdx}\" \"packages/**/*.{ts,tsx,js,jsx,mdx}\" --cache",
+    "fmt:check": "prettier --check \"apps/**/*.{ts,tsx,js,jsx,mdx}\" \"packages/**/*.{ts,tsx,js,jsx,mdx}\" --cache",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.14",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "husky": "^9.1.7",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.7.0",
+    "turbo": "^2.5.8"
+  },
+  "peerDependencies": {
+    "typescript": "~5.9.2"
+  }
+}

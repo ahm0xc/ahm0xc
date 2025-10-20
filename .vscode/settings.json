@@ -1,0 +1,14 @@
+{
+  "prettier.enable": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "never",
+    "source.organizeImports": "never",
+    "source.fixAll": "always",
+    "source.fixAll.stylelint": "never",
+    "source.addMissingImports": "always",
+    "source.removeUnusedImports": "always",
+    "source.sortImports": "always"
+  },
+}
