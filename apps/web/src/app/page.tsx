@@ -26,14 +26,14 @@ export default function HomePage() {
           >
             ahm0xc
           </Link>
-          , a self taught polyglot developer from Bangladesh. You might know me
+          , a self-taught polyglot developer from Bangladesh. You might know me
           as someone who builds web application or maybe backend infra or maybe
           mobile application or maybe desktop application or maybe some cli
           application or maybe...
         </p>
         <p className="text-foreground/80">
           Heck, maybe you don't even know me. I've been a web programmer since
-          the pre-npm days. This taught me some... Bower-ful lessons on what it
+          the pre-npm days. This taught me some... powerful lessons on what it
           takes to build scalable software. It's a lot more than JQuery and a
           dream.
         </p>
