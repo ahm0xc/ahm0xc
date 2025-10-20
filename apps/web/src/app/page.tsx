@@ -23,6 +23,7 @@ export default function HomePage() {
           <Link
             href="https://x.com/ahm0xc"
             className="font-pixel text-foreground"
+            target="_blank"
           >
             ahm0xc
           </Link>
