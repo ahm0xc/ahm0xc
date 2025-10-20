@@ -4,6 +4,7 @@ import { Pixelify_Sans } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 
 import { Navbar } from "~/components/navbar";
+import SnowFall from "~/components/snow-fall";
 import { ThemeProvider } from "~/components/theme-provider";
 import { cn } from "~/lib/utils";
 import "~/styles/globals.css";
@@ -40,6 +41,7 @@ export default function RootLayout({
         <TRPCReactProvider>
           <ThemeProvider>
             <Navbar />
+            <SnowFall />
             {children}
           </ThemeProvider>
         </TRPCReactProvider>
