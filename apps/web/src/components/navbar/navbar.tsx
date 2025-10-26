@@ -3,10 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { useTheme } from "next-themes";
+
 import { cn } from "~/lib/utils";
+
+import { Icons } from "../icons";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { resolvedTheme, setTheme } = useTheme();
 
   const navItems = [
     {
@@ -26,6 +31,10 @@ export default function Navbar() {
     },
   ];
 
+  function toggleTheme() {
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  }
+
   const isHome = pathname === "/";
 
   return (
@@ -36,6 +45,13 @@ export default function Navbar() {
           {navItems.map((item) => (
             <NavbarItem key={item.title} {...item} />
           ))}
+          <button onClick={toggleTheme}>
+            {resolvedTheme === "dark" ? (
+              <Icons.sun className="text-muted-foreground" />
+            ) : (
+              <Icons.moon className="text-muted-foreground" />
+            )}
+          </button>
         </div>
       </div>
     </nav>
