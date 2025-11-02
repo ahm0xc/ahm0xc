@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "dev": "turbo dev",
+    "build": "turbo build",
     "check": "npm run check-types && npm run fmt:check",
     "check-types": "turbo check-types",
     "fmt": "prettier --write \"apps/**/*.{ts,tsx,js,jsx,mdx}\" \"packages/**/*.{ts,tsx,js,jsx,mdx}\" --cache",
