@@ -13,6 +13,9 @@ import { TRPCReactProvider } from "~/trpc/react";
 const fontPixel = Pixelify_Sans({
   subsets: ["latin"],
   variable: "--font-pixel",
+  display: "swap",
+  preload: false,
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
