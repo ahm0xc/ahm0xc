@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { useTheme } from "next-themes";
 
+import useMounted from "~/hooks/use-mounted";
 import { cn } from "~/lib/utils";
 
 import { Icons } from "../icons";
@@ -12,6 +13,7 @@ import { Icons } from "../icons";
 export default function Navbar() {
   const pathname = usePathname();
   const { resolvedTheme, setTheme } = useTheme();
+  const mounted = useMounted();
 
   const navItems = [
     {
@@ -45,8 +47,8 @@ export default function Navbar() {
           {navItems.map((item) => (
             <NavbarItem key={item.title} {...item} />
           ))}
-          <button onClick={toggleTheme}>
-            {resolvedTheme === "dark" ? (
+          <button onClick={toggleTheme} title="Toggle theme">
+            {mounted && resolvedTheme === "dark" ? (
               <Icons.sun className="text-muted-foreground" />
             ) : (
               <Icons.moon className="text-muted-foreground" />

@@ -17,7 +17,8 @@ const fontPixel = Pixelify_Sans({
 
 export const metadata: Metadata = {
   title: "Ahmed",
-  description: "",
+  description:
+    "Welcome to my portfolio! I'm Ahmed, a passionate developer crafting unique digital experiences.",
 };
 
 export default function RootLayout({
@@ -42,7 +43,7 @@ export default function RootLayout({
           <ThemeProvider>
             <Navbar />
             <SnowFall />
-            {children}
+            <main className="h-full w-full">{children}</main>
           </ThemeProvider>
         </TRPCReactProvider>
       </body>
