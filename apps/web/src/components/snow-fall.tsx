@@ -1,9 +1,12 @@
 "use client";
 
+import { Suspense, lazy } from "react";
+
 import { useTheme } from "next-themes";
-import Snowfall from "react-snowfall";
 
 import useMounted from "~/hooks/use-mounted";
+
+const Snowfall = lazy(() => import("react-snowfall"));
 
 export default function SnowFall() {
   const { resolvedTheme } = useTheme();
@@ -12,7 +15,11 @@ export default function SnowFall() {
   if (!mounted) return null;
 
   if (resolvedTheme === "dark")
-    return <Snowfall snowflakeCount={30} radius={[0.5, 2.5]} />;
+    return (
+      <Suspense fallback={null}>
+        <Snowfall snowflakeCount={30} radius={[0.5, 2.5]} />
+      </Suspense>
+    );
 
   return null;
 }
