@@ -9,8 +9,8 @@ interface FooterProps {}
 
 const Footer: React.FC<FooterProps> = ({}) => {
   return (
-    <Container className="px-0 sm:px-4 w-full pt-4">
-      <footer className="relative">
+    <Container className="px-0 sm:px-4 w-full pt-10">
+      <footer className="relative px-4 sm:px-0">
         <div className="wavy-line opacity-50 absolute top-0 left-0 right-0 -translate-y-0.5" />
         <div className="flex items-center justify-between h-16">
           <div>

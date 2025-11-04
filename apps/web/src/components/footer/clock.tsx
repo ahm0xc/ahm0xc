@@ -59,7 +59,7 @@ const Clock: React.FC<ClockProps> = ({}) => {
         />
         <path
           d="M 0 0 L 0 -6 Z"
-          className="fill-none stroke-[1.5px] stroke-foreground"
+          className="fill-none stroke-1 stroke-foreground"
           id="clock-hours-hand"
         />
       </svg>
