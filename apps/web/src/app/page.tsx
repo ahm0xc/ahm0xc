@@ -5,7 +5,15 @@ import Container from "~/components/container";
 
 export default function HomePage() {
   return (
-    <Container className="flex flex-col gap-6 pt-32 md:pt-48">
+    <Container className="pt-32 md:pt-48">
+      <IntroductionSection />
+    </Container>
+  );
+}
+
+function IntroductionSection() {
+  return (
+    <section className="flex flex-col gap-6">
       <div>
         <Avatar className="size-10" />
       </div>
@@ -39,6 +47,6 @@ export default function HomePage() {
           dream.
         </p>
       </div>
-    </Container>
+    </section>
   );
 }

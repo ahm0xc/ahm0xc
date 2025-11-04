@@ -3,6 +3,7 @@ import { Pixelify_Sans } from "next/font/google";
 
 import { GeistSans } from "geist/font/sans";
 
+import { Footer } from "~/components/footer";
 import { Navbar } from "~/components/navbar";
 import SnowFall from "~/components/snow-fall";
 import { ThemeProvider } from "~/components/theme-provider";
@@ -31,7 +32,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "antialiased min-h-screen font-sans",
+          "antialiased min-h-screen flex flex-col font-sans",
           fontPixel.variable,
           GeistSans.variable
         )}
@@ -40,7 +41,8 @@ export default function RootLayout({
           <ThemeProvider>
             <Navbar />
             <SnowFall />
-            <main className="h-full w-full">{children}</main>
+            <main className="flex-1 w-full">{children}</main>
+            <Footer />
           </ThemeProvider>
         </TRPCReactProvider>
       </body>
