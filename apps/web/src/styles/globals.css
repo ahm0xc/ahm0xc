@@ -126,9 +126,9 @@
 }
 
 .wavy-line {
-  --s: 4px; /* size of the wave */
+  --s: 6px; /* size of the wave */
   --b: 1px; /* thickness of the line */
-  --m: 0.01; /* curvature of the wave [0 2] */
+  --m: 1.7; /* curvature of the wave [0 2] */
 
   background: var(--muted-foreground);
   --R: calc(var(--s) * sqrt(var(--m) * var(--m) + 1) + var(--b) / 2);
