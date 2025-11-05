@@ -13,11 +13,7 @@ const withBundleAnalyzer = bundleAnalyzer({
 /** @type {import("next").NextConfig} */
 const config = {
   devIndicators: false,
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   experimental: {
-    reactCompiler: true,
     optimizePackageImports: [
       "@radix-ui/react-dialog",
       "@radix-ui/react-select",
