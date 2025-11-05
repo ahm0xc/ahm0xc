@@ -5,9 +5,7 @@ import Signature from "~/components/signature";
 
 import Clock from "./clock";
 
-interface FooterProps {}
-
-const Footer: React.FC<FooterProps> = ({}) => {
+const Footer: React.FC = () => {
   return (
     <Container className="px-0 sm:px-4 w-full pt-10">
       <footer className="relative px-4 sm:px-0">

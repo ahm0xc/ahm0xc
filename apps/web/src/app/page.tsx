@@ -27,7 +27,7 @@ function IntroductionSection() {
       </div>
       <div className="mt-10 flex flex-col gap-6 w-full">
         <p className="text-foreground/80">
-          Hey there! I'm Ahmed aka{" "}
+          Hey there! I&apos;m Ahmed aka{" "}
           <Link
             href="https://x.com/ahm0xc"
             className="font-pixel text-foreground"
@@ -41,10 +41,10 @@ function IntroductionSection() {
           application or maybe...
         </p>
         <p className="text-foreground/80">
-          Heck, maybe you don't even know me. I've been a web programmer since
-          the pre-npm days. This taught me some... powerful lessons on what it
-          takes to build scalable software. It's a lot more than JQuery and a
-          dream.
+          Heck, maybe you don&apos;t even know me. I&apos;ve been a web
+          programmer since the pre-npm days. This taught me some... powerful
+          lessons on what it takes to build scalable software. It&apos;s a lot
+          more than JQuery and a dream.
         </p>
       </div>
     </section>

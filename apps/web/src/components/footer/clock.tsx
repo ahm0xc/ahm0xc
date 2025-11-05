@@ -2,9 +2,7 @@
 
 import * as React from "react";
 
-interface ClockProps {}
-
-const Clock: React.FC<ClockProps> = ({}) => {
+const Clock: React.FC = () => {
   function checkTime() {
     const date = new Date();
     const hours = date.getHours();
