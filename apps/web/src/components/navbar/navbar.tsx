@@ -22,9 +22,9 @@ export default function Navbar() {
       isActive: pathname === "/projects",
     },
     {
-      title: "blog",
-      href: "/blog",
-      isActive: pathname === "/blog",
+      title: "writing",
+      href: "/writing",
+      isActive: pathname === "/writing",
     },
     {
       title: "resume",

@@ -1,5 +1,5 @@
 import Container from "~/components/container";
 
-export default function BlogPage() {
+export default function WritingPage() {
   return <Container>coming soon</Container>;
 }
