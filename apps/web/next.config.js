@@ -3,7 +3,6 @@
  * for Docker builds.
  */
 import bundleAnalyzer from "@next/bundle-analyzer";
-import createMDX from "@next/mdx";
 
 import "./src/env.js";
 
@@ -41,17 +40,4 @@ const config = {
   productionBrowserSourceMaps: false,
 };
 
-const withMDX = createMDX({
-  extension: /\.(md|mdx)$/,
-  options: {
-    remarkPlugins: [
-      "remark-gfm",
-      "remark-frontmatter",
-      "remark-breaks",
-      "remark-mdx-frontmatter",
-    ],
-    rehypePlugins: ["rehype-slug"],
-  },
-});
-
-export default withMDX(withBundleAnalyzer(config));
+export default withBundleAnalyzer(config);
