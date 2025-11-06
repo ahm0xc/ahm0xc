@@ -1,30 +1,16 @@
 import Link from "next/link";
 
-import fs from "fs/promises";
-import { compileMDX } from "next-mdx-remote/rsc";
-import path from "path";
-import remarkGfm from "remark-gfm";
-
 import Container from "~/components/container";
-import Dummy from "~/components/dummy";
 import { cn } from "~/lib/utils";
+import { getWritingBySlug, getWritingSlugs } from "~/lib/writing";
 
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  const contentDir = path.join(process.cwd(), "src/content/writing");
-  const fileNames = await fs.readdir(contentDir);
+  const slugs = await getWritingSlugs();
 
-  return fileNames
-    .filter((file) => file.endsWith(".mdx"))
-    .map((file) => ({
-      slug: file.replace(/\.mdx$/, ""),
-    }));
+  return slugs.map((slug) => ({ slug }));
 }
-
-const components = {
-  Dummy,
-};
 
 export default async function Page({
   params,
@@ -33,23 +19,7 @@ export default async function Page({
 }) {
   const { slug } = await params;
 
-  const filePath = path.join(
-    process.cwd(),
-    "src/content/writing",
-    `${slug}.mdx`
-  );
-  const source = await fs.readFile(filePath, "utf8");
-
-  const { content, frontmatter } = await compileMDX({
-    source,
-    options: {
-      parseFrontmatter: true,
-      mdxOptions: {
-        remarkPlugins: [remarkGfm],
-      },
-    },
-    components,
-  });
+  const { content, frontmatter } = await getWritingBySlug(slug);
 
   return (
     <div>

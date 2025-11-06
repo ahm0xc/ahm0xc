@@ -7,7 +7,7 @@ import { Footer } from "~/components/footer";
 import { Navbar } from "~/components/navbar";
 import SnowFall from "~/components/snow-fall";
 import { ThemeProvider } from "~/components/theme-provider";
-import { cn } from "~/lib/utils";
+import { cn, getBaseUrl } from "~/lib/utils";
 import "~/styles/globals.css";
 import { TRPCReactProvider } from "~/trpc/react";
 
@@ -23,6 +23,7 @@ export const metadata: Metadata = {
   title: "Ahmed",
   description:
     "Welcome to my portfolio! I'm Ahmed, a passionate developer crafting unique digital experiences.",
+  metadataBase: getBaseUrl(),
 };
 
 export default function RootLayout({
