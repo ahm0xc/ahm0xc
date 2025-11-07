@@ -1,7 +1,23 @@
+import { Metadata } from "next";
 import Link from "next/link";
 
 import Container from "~/components/container";
 import { getAllWritings } from "~/lib/writing";
+
+export const metadata: Metadata = {
+  title: "Writings | ahm0xc",
+  description: "A collection of my writings",
+  openGraph: {
+    images: [
+      {
+        url: `/og?title=${encodeURIComponent("Writings | ahm0xc")}`,
+        width: 1200,
+        height: 630,
+        alt: "Writings | ahm0xc",
+      },
+    ],
+  },
+};
 
 export default async function WritingPage() {
   const writings = await getAllWritings();

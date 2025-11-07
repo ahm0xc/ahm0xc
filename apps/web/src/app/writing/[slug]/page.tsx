@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import Link from "next/link";
 
 import Container from "~/components/container";
@@ -10,6 +11,33 @@ export async function generateStaticParams() {
   const slugs = await getWritingSlugs();
 
   return slugs.map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+
+  const { frontmatter } = await getWritingBySlug(slug);
+
+  return {
+    title: frontmatter.title as string,
+    description: frontmatter.description as string,
+    openGraph: {
+      title: frontmatter.title as string,
+      description: frontmatter.description as string,
+      images: [
+        {
+          url: `/og?title=${encodeURIComponent(frontmatter.title as string)}`,
+          width: 1200,
+          height: 630,
+          alt: frontmatter.title as string,
+        },
+      ],
+    },
+  };
 }
 
 export default async function Page({
