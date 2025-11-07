@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import { compileMDX } from "next-mdx-remote/rsc";
 import path from "path";
 import remarkGfm from "remark-gfm";
+import { highlight as remarkHighlight } from "remark-sugar-high";
 
 import { mdxComponents } from "~/components/mdx-components";
 
@@ -25,7 +26,7 @@ export async function getWritingBySlug(slug: string) {
     options: {
       parseFrontmatter: true,
       mdxOptions: {
-        remarkPlugins: [remarkGfm],
+        remarkPlugins: [remarkGfm, remarkHighlight],
       },
     },
     components: mdxComponents,
