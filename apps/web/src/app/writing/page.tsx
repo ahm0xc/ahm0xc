@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 import Container from "~/components/container";
-import { getAllWritings } from "~/lib/writing";
+import { getAllWritings } from "~/lib/content";
 
 export const metadata: Metadata = {
   title: "Writings | ahm0xc",

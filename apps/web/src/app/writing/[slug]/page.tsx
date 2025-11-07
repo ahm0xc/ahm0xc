@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 import Container from "~/components/container";
+import { getWritingBySlug, getWritingSlugs } from "~/lib/content";
 import { cn } from "~/lib/utils";
-import { getWritingBySlug, getWritingSlugs } from "~/lib/writing";
 
 export const dynamicParams = false;
 
