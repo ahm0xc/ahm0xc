@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 import Container from "~/components/container";
+import { Icons } from "~/components/icons";
 import { getWritingBySlug, getWritingSlugs } from "~/lib/content";
 import { cn } from "~/lib/utils";
 
@@ -53,6 +54,15 @@ export default async function Page({
     <div>
       <Container className="pt-36 max-w-xl mx-auto">
         <div>
+          <button className="mb-4">
+            <Link
+              href="/writing"
+              className="flex items-center gap-2 text-foreground/70"
+            >
+              <Icons.arrowMoveUpLeft className="size-4" />
+              <span>Back</span>
+            </Link>
+          </button>
           <h1 className="font-pixel text-5xl font-semibold">
             {frontmatter.title as string}
           </h1>
