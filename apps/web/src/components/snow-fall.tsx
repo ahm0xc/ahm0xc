@@ -16,9 +16,11 @@ export default function SnowFall() {
 
   if (resolvedTheme === "dark")
     return (
-      <Suspense fallback={null}>
-        <Snowfall snowflakeCount={30} radius={[0.5, 2.5]} />
-      </Suspense>
+      <div className="fixed top-0 left-0 w-full h-full pointer-events-none">
+        <Suspense fallback={null}>
+          <Snowfall snowflakeCount={30} radius={[0.5, 2.5]} />
+        </Suspense>
+      </div>
     );
 
   return null;
