@@ -1,0 +1,892 @@
+---
+title: Making PostgreSQL Performant
+date: 2024-11-08
+---
+
+> PostgreSQL is the world's most advanced open source relational database, but performance doesn't come for free.
+
+## Introduction
+
+So you've chosen **PostgreSQL** as your database (great choice, by the way), but now your queries are starting to feel sluggish. Your API responses are taking longer, your users are complaining, and you're wondering if you made the right choice. Don't worry, PostgreSQL is incredibly powerful, but like any tool, you need to know how to use it properly.
+
+In this article, I'm going to walk you through everything I've learned about making PostgreSQL fast.
+
+---
+
+## Understanding the Problem First
+
+### Why Is My Database Slow?
+
+Before we dive into solutions, let's understand what actually makes a database slow. It's usually one (or more) of these culprits:
+
+1. **Missing Indexes**: You're forcing PostgreSQL to scan millions of rows
+2. **Poor Query Design**: Your queries are doing way more work than they need to
+3. **Lock Contention**: Queries are waiting on each other
+4. **Resource Constraints**: Not enough RAM, CPU, or disk I/O
+5. **Bloat**: Your database is full of dead tuples (deleted/updated rows)
+6. **Configuration Issues**: Using default settings that don't match your workload
+
+The good news? Most of these are fixable. Let's tackle them one by one.
+
+---
+
+## Indexing: Your First Line of Defense
+
+### What Are Indexes, Really?
+
+Think of an index like the index in a book. Without it, you'd have to read every page to find what you're looking for. With an index, you can jump straight to the page you need.
+
+```sql
+-- Without index: PostgreSQL scans ALL rows (Seq Scan)
+SELECT * FROM users WHERE email = 'john@example.com';
+
+-- With index: PostgreSQL jumps directly to the row (Index Scan)
+CREATE INDEX idx_users_email ON users(email);
+```
+
+### Types of Indexes
+
+PostgreSQL gives you several types of indexes. Here's when to use each:
+
+#### B-tree Index (Default)
+
+This is your go-to for most cases:
+
+```sql
+-- Perfect for equality and range queries
+CREATE INDEX idx_users_created_at ON users(created_at);
+
+-- Supports these queries efficiently:
+SELECT * FROM users WHERE created_at > '2024-01-01';
+SELECT * FROM users WHERE created_at BETWEEN '2024-01-01' AND '2024-12-31';
+SELECT * FROM users ORDER BY created_at;
+```
+
+#### Hash Index
+
+Use for simple equality checks (but honestly, B-tree is usually just as good):
+
+```sql
+CREATE INDEX idx_users_uuid ON users USING hash(uuid);
+
+-- Good for:
+SELECT * FROM users WHERE uuid = '123e4567-e89b-12d3-a456-426614174000';
+```
+
+#### GIN Index (Generalized Inverted Index)
+
+Perfect for full-text search and JSONB:
+
+```sql
+-- For JSONB columns
+CREATE INDEX idx_users_preferences ON users USING gin(preferences);
+
+-- Now this is fast:
+SELECT * FROM users WHERE preferences @> '{"theme": "dark"}';
+
+-- For full-text search
+CREATE INDEX idx_posts_search ON posts USING gin(to_tsvector('english', content));
+
+SELECT * FROM posts
+WHERE to_tsvector('english', content) @@ to_tsquery('postgresql & performance');
+```
+
+#### GiST Index (Generalized Search Tree)
+
+Great for geometric data and full-text search:
+
+```sql
+-- For geospatial queries
+CREATE INDEX idx_locations_point ON locations USING gist(coordinates);
+
+-- Fast geospatial queries:
+SELECT * FROM locations
+WHERE coordinates <@ circle '((0,0), 10)';
+```
+
+#### Partial Indexes
+
+Index only the rows you care about:
+
+```sql
+-- Only index active users
+CREATE INDEX idx_active_users_email
+ON users(email)
+WHERE is_active = true;
+
+-- This query uses the smaller, faster index:
+SELECT * FROM users
+WHERE email = 'john@example.com' AND is_active = true;
+```
+
+#### Composite Indexes
+
+Multiple columns in one index:
+
+```sql
+-- Perfect for queries that filter on both columns
+CREATE INDEX idx_users_country_city ON users(country, city);
+
+-- This is fast:
+SELECT * FROM users WHERE country = 'USA' AND city = 'New York';
+
+-- This also works (uses leftmost columns):
+SELECT * FROM users WHERE country = 'USA';
+
+-- But this WON'T use the index (city is not the leftmost column):
+SELECT * FROM users WHERE city = 'New York';
+```
+
+### When NOT to Index
+
+Here's the thing about indexes: they're not free. Every index:
+
+- Takes up disk space
+- Slows down INSERT, UPDATE, and DELETE operations
+- Needs to be maintained
+
+```sql
+-- ❌ Don't index:
+-- - Columns with low cardinality (few unique values)
+CREATE INDEX idx_users_gender ON users(gender);  -- Only 2-3 values? Skip it.
+
+-- - Small tables (< 1000 rows)
+CREATE INDEX idx_settings_key ON settings(key);  -- Table is tiny, seq scan is fine
+
+-- - Columns that are rarely queried
+CREATE INDEX idx_users_random_field ON users(random_field);  -- Nobody queries this
+```
+
+---
+
+## Query Optimization: Writing Fast SQL
+
+### Use EXPLAIN ANALYZE
+
+This is your best friend. It shows you exactly what PostgreSQL is doing:
+
+```sql
+EXPLAIN ANALYZE
+SELECT u.name, COUNT(o.id) as order_count
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE u.created_at > '2024-01-01'
+GROUP BY u.id, u.name
+ORDER BY order_count DESC
+LIMIT 10;
+```
+
+Look for these red flags:
+
+- **Seq Scan** on large tables (needs an index)
+- **High cost numbers** (needs optimization)
+- **Slow execution time** (actual time vs. planned time)
+- **Large row counts** at early stages (filter earlier)
+
+### The N+1 Problem
+
+This is the classic performance killer:
+
+```javascript
+// ❌ BAD: N+1 queries
+const users = await db.query("SELECT * FROM users LIMIT 10");
+for (const user of users) {
+  // This runs 10 separate queries!
+  const orders = await db.query("SELECT * FROM orders WHERE user_id = $1", [
+    user.id,
+  ]);
+  user.orders = orders;
+}
+
+// ✅ GOOD: Single query with JOIN
+const result = await db.query(`
+  SELECT u.*, 
+         json_agg(o.*) as orders
+  FROM users u
+  LEFT JOIN orders o ON o.user_id = u.id
+  GROUP BY u.id
+  LIMIT 10
+`);
+```
+
+### Use Joins Wisely
+
+```sql
+-- ✅ GOOD: Filter before joining
+SELECT u.name, o.total
+FROM (
+  SELECT * FROM users WHERE created_at > '2024-01-01'
+) u
+INNER JOIN orders o ON u.id = o.user_id;
+
+-- ❌ BAD: Join then filter
+SELECT u.name, o.total
+FROM users u
+INNER JOIN orders o ON u.id = o.user_id
+WHERE u.created_at > '2024-01-01';
+```
+
+Actually, PostgreSQL's query planner is smart and will often optimize both of these the same way, but it's good to think about filtering early.
+
+### Batch Operations
+
+```sql
+-- ❌ BAD: Multiple queries
+INSERT INTO users (name, email) VALUES ('Alice', 'alice@example.com');
+INSERT INTO users (name, email) VALUES ('Bob', 'bob@example.com');
+INSERT INTO users (name, email) VALUES ('Charlie', 'charlie@example.com');
+
+-- ✅ GOOD: Single query
+INSERT INTO users (name, email) VALUES
+  ('Alice', 'alice@example.com'),
+  ('Bob', 'bob@example.com'),
+  ('Charlie', 'charlie@example.com');
+
+-- Even better: Use COPY for bulk imports
+COPY users(name, email) FROM '/tmp/users.csv' CSV HEADER;
+```
+
+---
+
+## Connection Pooling: Don't Run Out of Connections
+
+PostgreSQL has a limited number of connections (default is often 100). Creating new connections is expensive (10-20ms each).
+
+### The Problem
+
+```javascript
+// ❌ BAD: Creating new connection for each query
+async function getUser(id) {
+  const client = new Client({ connectionString });
+  await client.connect();
+  const result = await client.query("SELECT * FROM users WHERE id = $1", [id]);
+  await client.end();
+  return result.rows[0];
+}
+
+// If you have 1000 req/sec, this tries to create 1000 connections!
+```
+
+### The Solution: Use a Pool
+
+```javascript
+// ✅ GOOD: Use connection pooling
+import { Pool } from "pg";
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  max: 20, // Maximum 20 connections
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
+
+async function getUser(id) {
+  const result = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+  return result.rows[0];
+}
+```
+
+### Use External Poolers for Production
+
+For production, use PgBouncer or Pgpool-II:
+
+```bash
+# PgBouncer configuration
+[databases]
+mydb = host=localhost dbname=mydb
+
+[pgbouncer]
+listen_port = 6432
+listen_addr = 127.0.0.1
+auth_type = md5
+auth_file = /etc/pgbouncer/userlist.txt
+pool_mode = transaction
+max_client_conn = 1000
+default_pool_size = 25
+```
+
+---
+
+## Configuration Tuning
+
+PostgreSQL's default configuration is designed to run on a toaster. Let's fix that.
+
+### Memory Settings
+
+```sql
+-- postgresql.conf
+
+-- Shared buffers: 25% of RAM (up to 8GB)
+shared_buffers = 2GB
+
+-- Effective cache size: 50-75% of RAM
+effective_cache_size = 6GB
+
+-- Work mem: RAM / (max_connections * 2-3)
+work_mem = 16MB
+
+-- Maintenance work mem: 5-10% of RAM
+maintenance_work_mem = 512MB
+```
+
+### Checkpoint Settings
+
+Checkpoints are when PostgreSQL writes dirty buffers to disk. Too frequent = bad performance.
+
+```sql
+-- How much WAL between checkpoints (larger = less frequent)
+max_wal_size = 2GB
+min_wal_size = 1GB
+
+-- Maximum time between checkpoints
+checkpoint_timeout = 15min
+
+-- Spread checkpoint writes over time
+checkpoint_completion_target = 0.9
+```
+
+### Query Planner Settings
+
+```sql
+-- Help the planner make better decisions
+random_page_cost = 1.1  -- Lower for SSDs (default is 4.0)
+effective_io_concurrency = 200  -- Higher for SSDs
+
+-- Enable parallel queries
+max_parallel_workers_per_gather = 4
+max_parallel_workers = 8
+```
+
+### Apply Changes
+
+```bash
+# Check syntax
+postgres --single -D /var/lib/postgresql/data --check
+
+# Reload configuration (no restart needed for most settings)
+SELECT pg_reload_conf();
+
+# Some settings require restart
+sudo systemctl restart postgresql
+```
+
+---
+
+## Monitoring and Maintenance
+
+### Essential Queries for Monitoring
+
+#### Find Slow Queries
+
+```sql
+-- Enable slow query logging
+ALTER SYSTEM SET log_min_duration_statement = 1000;  -- Log queries > 1s
+SELECT pg_reload_conf();
+
+-- View currently running queries
+SELECT pid,
+       now() - query_start as duration,
+       query,
+       state
+FROM pg_stat_activity
+WHERE state != 'idle'
+ORDER BY duration DESC;
+
+-- Kill a long-running query
+SELECT pg_terminate_backend(pid);
+```
+
+#### Check Index Usage
+
+```sql
+-- Find unused indexes
+SELECT schemaname, tablename, indexname, idx_scan
+FROM pg_stat_user_indexes
+WHERE idx_scan = 0
+AND indexrelname NOT LIKE 'pg_toast_%';
+
+-- Find missing indexes (tables with lots of seq scans)
+SELECT schemaname, tablename, seq_scan, seq_tup_read,
+       idx_scan, seq_tup_read / seq_scan as avg_seq_tuples
+FROM pg_stat_user_tables
+WHERE seq_scan > 0
+ORDER BY seq_tup_read DESC
+LIMIT 20;
+```
+
+#### Monitor Cache Hit Ratio
+
+```sql
+-- Should be > 99%
+SELECT
+  sum(heap_blks_read) as heap_read,
+  sum(heap_blks_hit) as heap_hit,
+  sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio
+FROM pg_statio_user_tables;
+```
+
+#### Check Table Bloat
+
+```sql
+-- Find bloated tables
+SELECT schemaname, tablename,
+       pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) as size,
+       n_dead_tup,
+       n_live_tup,
+       round(n_dead_tup * 100.0 / NULLIF(n_live_tup + n_dead_tup, 0), 2) as dead_ratio
+FROM pg_stat_user_tables
+WHERE n_dead_tup > 1000
+ORDER BY n_dead_tup DESC;
+```
+
+### VACUUM and ANALYZE
+
+PostgreSQL needs regular maintenance:
+
+```sql
+-- Manual vacuum (reclaims space from dead tuples)
+VACUUM users;
+
+-- Vacuum full (rewrites entire table, locks it)
+VACUUM FULL users;
+
+-- Analyze (updates statistics for query planner)
+ANALYZE users;
+
+-- Do both
+VACUUM ANALYZE users;
+```
+
+#### Auto-vacuum Configuration
+
+```sql
+-- postgresql.conf
+autovacuum = on
+autovacuum_max_workers = 3
+autovacuum_naptime = 1min
+
+-- Per-table settings
+ALTER TABLE users SET (
+  autovacuum_vacuum_scale_factor = 0.1,
+  autovacuum_analyze_scale_factor = 0.05
+);
+```
+
+---
+
+## Partitioning Large Tables
+
+When tables get massive (> 100GB), consider partitioning:
+
+### Range Partitioning
+
+```sql
+-- Create partitioned table
+CREATE TABLE orders (
+    id BIGSERIAL,
+    user_id INTEGER,
+    total DECIMAL,
+    created_at TIMESTAMP NOT NULL,
+    PRIMARY KEY (id, created_at)
+) PARTITION BY RANGE (created_at);
+
+-- Create partitions
+CREATE TABLE orders_2024_q1 PARTITION OF orders
+    FOR VALUES FROM ('2024-01-01') TO ('2024-04-01');
+
+CREATE TABLE orders_2024_q2 PARTITION OF orders
+    FOR VALUES FROM ('2024-04-01') TO ('2024-07-01');
+
+CREATE TABLE orders_2024_q3 PARTITION OF orders
+    FOR VALUES FROM ('2024-07-01') TO ('2024-10-01');
+
+CREATE TABLE orders_2024_q4 PARTITION OF orders
+    FOR VALUES FROM ('2024-10-01') TO ('2025-01-01');
+
+-- Queries automatically use correct partition
+SELECT * FROM orders WHERE created_at BETWEEN '2024-05-01' AND '2024-05-31';
+-- Only scans orders_2024_q2!
+```
+
+### List Partitioning
+
+```sql
+-- Partition by country
+CREATE TABLE users (
+    id SERIAL,
+    name TEXT,
+    country TEXT,
+    PRIMARY KEY (id, country)
+) PARTITION BY LIST (country);
+
+CREATE TABLE users_usa PARTITION OF users
+    FOR VALUES IN ('USA');
+
+CREATE TABLE users_uk PARTITION OF users
+    FOR VALUES IN ('UK');
+
+CREATE TABLE users_other PARTITION OF users
+    DEFAULT;
+```
+
+---
+
+## Caching Strategies
+
+### Database-Level Caching
+
+PostgreSQL already caches data in memory (shared_buffers), but you can help:
+
+```sql
+-- Prepared statements (cached query plans)
+PREPARE get_user (INT) AS
+  SELECT * FROM users WHERE id = $1;
+
+EXECUTE get_user(123);
+EXECUTE get_user(456);
+```
+
+### Application-Level Caching
+
+```javascript
+import Redis from "ioredis";
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function getUser(id) {
+  // Check cache first
+  const cached = await redis.get(`user:${id}`);
+  if (cached) return JSON.parse(cached);
+
+  // Not in cache, fetch from DB
+  const user = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+
+  // Store in cache (expire after 1 hour)
+  await redis.setex(`user:${id}`, 3600, JSON.stringify(user.rows[0]));
+
+  return user.rows[0];
+}
+```
+
+### Materialized Views
+
+For expensive queries that don't need real-time data:
+
+```sql
+-- Create materialized view
+CREATE MATERIALIZED VIEW user_stats AS
+SELECT
+    user_id,
+    COUNT(*) as order_count,
+    SUM(total) as total_spent,
+    MAX(created_at) as last_order
+FROM orders
+GROUP BY user_id;
+
+-- Create index on it
+CREATE INDEX idx_user_stats_user_id ON user_stats(user_id);
+
+-- Query is now instant
+SELECT * FROM user_stats WHERE user_id = 123;
+
+-- Refresh periodically (can be done concurrently)
+REFRESH MATERIALIZED VIEW CONCURRENTLY user_stats;
+```
+
+---
+
+## Replication and Read Replicas
+
+For read-heavy applications, use replicas:
+
+### Streaming Replication
+
+```bash
+# On primary server (postgresql.conf)
+wal_level = replica
+max_wal_senders = 3
+max_replication_slots = 3
+synchronous_commit = on
+
+# Create replication user
+CREATE ROLE replicator WITH REPLICATION LOGIN PASSWORD 'password';
+
+# On replica server
+pg_basebackup -h primary-host -D /var/lib/postgresql/data -U replicator -P --wal-method=stream
+```
+
+### Split Reads and Writes
+
+```javascript
+const primaryPool = new Pool({
+  connectionString: process.env.PRIMARY_DATABASE_URL,
+});
+
+const replicaPool = new Pool({
+  connectionString: process.env.REPLICA_DATABASE_URL,
+});
+
+// Writes go to primary
+async function createUser(data) {
+  return primaryPool.query(
+    "INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *",
+    [data.name, data.email]
+  );
+}
+
+// Reads go to replica
+async function getUsers() {
+  return replicaPool.query("SELECT * FROM users ORDER BY created_at DESC");
+}
+```
+
+---
+
+## Real-World Performance Wins
+
+### Case Study 1: Adding the Right Index
+
+```sql
+-- Before: 12 seconds
+EXPLAIN ANALYZE
+SELECT * FROM orders
+WHERE user_id = 123 AND status = 'completed';
+
+-- Seq Scan on orders (cost=0.00..50000.00 rows=1000)
+-- Planning Time: 0.5 ms
+-- Execution Time: 12000.0 ms
+
+-- After: Adding composite index
+CREATE INDEX idx_orders_user_status ON orders(user_id, status);
+
+-- Index Scan using idx_orders_user_status (cost=0.42..15.20 rows=1000)
+-- Planning Time: 0.3 ms
+-- Execution Time: 2.5 ms
+```
+
+**Result: 4800x faster!**
+
+### Case Study 2: Connection Pooling
+
+```javascript
+// Before: No pooling
+// - Avg response time: 150ms
+// - Max throughput: 50 req/s
+// - Connection errors under load
+
+// After: PgBouncer + Pool
+// - Avg response time: 15ms
+// - Max throughput: 2000 req/s
+// - No connection errors
+```
+
+**Result: 10x faster, 40x more throughput**
+
+### Case Study 3: Materialized Views
+
+```sql
+-- Before: Complex analytics query
+-- - Execution time: 45 seconds
+-- - Joins 6 tables
+-- - Scans 10M rows
+
+-- After: Materialized view (refreshed hourly)
+-- - Execution time: 5ms
+-- - No joins needed
+-- - Scans 1000 rows
+```
+
+**Result: 9000x faster**
+
+---
+
+## Common Mistakes and How to Avoid Them
+
+### Mistake #1: SELECT \*
+
+```sql
+-- ❌ BAD: Fetches all columns (including large TEXT/JSON fields)
+SELECT * FROM users WHERE id = 123;
+
+-- ✅ GOOD: Only fetch what you need
+SELECT id, name, email FROM users WHERE id = 123;
+```
+
+### Mistake #2: Not Using LIMIT
+
+```sql
+-- ❌ BAD: Returns all matching rows (could be millions)
+SELECT * FROM orders WHERE status = 'pending';
+
+-- ✅ GOOD: Use LIMIT and pagination
+SELECT * FROM orders
+WHERE status = 'pending'
+ORDER BY created_at DESC
+LIMIT 100 OFFSET 0;
+```
+
+### Mistake #3: Implicit Type Conversions
+
+```sql
+-- ❌ BAD: Can't use index (text compared to integer)
+SELECT * FROM users WHERE id::text = '123';
+
+-- ✅ GOOD: Match types
+SELECT * FROM users WHERE id = 123;
+```
+
+### Mistake #4: NOT IN with Large Lists
+
+```sql
+-- ❌ BAD: Slow with large lists
+SELECT * FROM users WHERE id NOT IN (SELECT user_id FROM banned_users);
+
+-- ✅ GOOD: Use LEFT JOIN or NOT EXISTS
+SELECT u.* FROM users u
+LEFT JOIN banned_users b ON u.id = b.user_id
+WHERE b.user_id IS NULL;
+```
+
+### Mistake #5: No WHERE Clause Updates
+
+```sql
+-- ❌ DANGEROUS: Updates all rows (and locks table)
+UPDATE users SET last_login = NOW();
+
+-- ✅ GOOD: Always use WHERE (or be very intentional)
+UPDATE users SET last_login = NOW() WHERE id = 123;
+
+-- If you really need to update all rows, do it in batches:
+DO $$
+DECLARE
+  batch_size INT := 1000;
+BEGIN
+  LOOP
+    UPDATE users SET last_login = NOW()
+    WHERE id IN (
+      SELECT id FROM users
+      WHERE last_login IS NULL
+      LIMIT batch_size
+    );
+
+    EXIT WHEN NOT FOUND;
+    COMMIT;
+  END LOOP;
+END $$;
+```
+
+---
+
+## PostgreSQL vs Other Databases
+
+### When PostgreSQL Shines
+
+- ✅ Complex queries with joins
+- ✅ JSONB support (NoSQL + SQL)
+- ✅ Full-text search
+- ✅ Geospatial data (PostGIS)
+- ✅ ACID compliance
+- ✅ Advanced features (CTEs, window functions, etc.)
+
+### When to Consider Alternatives
+
+| Use Case              | Consider                | Why                           |
+| --------------------- | ----------------------- | ----------------------------- |
+| Simple key-value      | Redis                   | 100x faster for caching       |
+| Write-heavy analytics | ClickHouse, TimescaleDB | Optimized for time-series     |
+| Full-text search      | Elasticsearch           | Better ranking, fuzzy search  |
+| Graph relationships   | Neo4j                   | Optimized for graph traversal |
+| Horizontal scaling    | Cassandra, CockroachDB  | Built-in sharding             |
+
+---
+
+## Useful Tools
+
+### pgAdmin
+
+Web-based PostgreSQL administration tool
+
+### pgBench
+
+Built-in benchmarking tool:
+
+```bash
+# Initialize test database
+pgbench -i -s 50 mydb
+
+# Run benchmark (10 clients, 2 threads, 60 seconds)
+pgbench -c 10 -j 2 -T 60 mydb
+```
+
+### pg_stat_statements
+
+Track query performance:
+
+```sql
+-- Enable extension
+CREATE EXTENSION pg_stat_statements;
+
+-- Find slowest queries
+SELECT
+  query,
+  calls,
+  mean_exec_time,
+  total_exec_time
+FROM pg_stat_statements
+ORDER BY total_exec_time DESC
+LIMIT 10;
+```
+
+### pgHero
+
+Beautiful dashboard for PostgreSQL:
+
+```bash
+docker run -p 3001:3001 -e DATABASE_URL=postgres://localhost/mydb ankane/pghero
+```
+
+---
+
+## The Performance Checklist
+
+Use this checklist for every PostgreSQL project:
+
+### Initial Setup
+
+- [ ] Configure memory settings based on available RAM
+- [ ] Set up connection pooling (application + PgBouncer)
+- [ ] Enable `pg_stat_statements` for query tracking
+- [ ] Configure appropriate checkpoint settings
+- [ ] Set up automated backups
+
+### Development
+
+- [ ] Add indexes for all foreign keys
+- [ ] Use EXPLAIN ANALYZE for slow queries
+- [ ] Batch INSERT/UPDATE operations
+- [ ] Use prepared statements
+- [ ] Avoid SELECT \*
+
+### Production
+
+- [ ] Monitor slow query log
+- [ ] Check index usage weekly
+- [ ] Monitor cache hit ratio (should be > 99%)
+- [ ] Run VACUUM ANALYZE regularly
+- [ ] Monitor connection count
+- [ ] Set up read replicas for read-heavy apps
+- [ ] Monitor disk space and table bloat
+
+---
+
+## Conclusion
+
+Making PostgreSQL performant isn't rocket science, but it does require attention to detail. The key principles are:
+
+1. **Index smartly** - but don't over-index
+2. **Monitor everything** - you can't optimize what you don't measure
+3. **Pool connections** - never create connections on-demand
+4. **Configure properly** - don't use default settings
+5. **Maintain regularly** - VACUUM and ANALYZE are your friends
+
+Remember: **premature optimization is evil**, but so is ignoring performance until it's a crisis. Start with good practices from day one, and you'll thank yourself later.
