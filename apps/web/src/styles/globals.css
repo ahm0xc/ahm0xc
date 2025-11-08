@@ -39,15 +39,15 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  --sh-class: #2d5e9d;
-  --sh-identifier: #354150;
-  --sh-sign: #8996a3;
-  --sh-property: #0550ae;
-  --sh-entity: #249a97;
-  --sh-jsxliterals: #6266d1;
-  --sh-string: #00a99a;
-  --sh-keyword: #f47067;
-  --sh-comment: #a19595;
+  --sh-class: #b46b00;
+  --sh-identifier: #1a1a1a;
+  --sh-sign: #666666;
+  --sh-property: #b46b00;
+  --sh-entity: #b46b00;
+  --sh-jsxliterals: #007f7f;
+  --sh-string: #008080;
+  --sh-keyword: #5a5a5a;
+  --sh-comment: #a0a0a0;
 }
 
 .dark {
@@ -84,15 +84,15 @@
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
 
-  --sh-class: #82aaff;
-  --sh-identifier: #d6deeb;
-  --sh-sign: #7f848e;
-  --sh-property: #addb67;
-  --sh-entity: #c792ea;
-  --sh-jsxliterals: #89ddff;
-  --sh-string: #ecc48d;
-  --sh-keyword: #ff5874;
-  --sh-comment: #5c6370;
+  --sh-class: #ffc799;
+  --sh-identifier: #ffffff;
+  --sh-sign: #a0a0a0;
+  --sh-property: #ffc799;
+  --sh-entity: #ffc799;
+  --sh-jsxliterals: #99ffe4;
+  --sh-string: #99ffe4;
+  --sh-keyword: #a0a0a0;
+  --sh-comment: #8b8b8b94;
 }
 
 @theme inline {
