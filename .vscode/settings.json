@@ -11,4 +11,7 @@
     "source.removeUnusedImports": "always",
     "source.sortImports": "always"
   },
+  "cSpell.words": [
+    "Elysia"
+  ],
 }
