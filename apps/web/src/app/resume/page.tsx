@@ -36,7 +36,7 @@ export default function ResumePage() {
       companyUrl: "https://ollyo.com",
       logoUrl: "/ollyo-logo.svg",
       position: "Infrastructure Engineer",
-      period: "2022 — 2023",
+      period: "2021 — 2023",
       details:
         "Implemented high-performance database solutions, designed distributed systems architecture, optimized application performance and reliability, and automated deployment and CI/CD pipelines.",
     },
