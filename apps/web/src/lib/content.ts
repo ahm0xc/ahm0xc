@@ -7,7 +7,7 @@ import * as z from "zod/mini";
 
 import { mdxComponents } from "~/components/mdx-components";
 
-export const WRITING_CATEGORIES = ["database", "backend"] as const;
+export const WRITING_CATEGORIES = ["database", "backend", "frontend"] as const;
 
 export const writingFrontmatterSchema = z.object({
   title: z.string(),

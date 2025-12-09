@@ -1,0 +1,212 @@
+---
+title: 3 HTML Features I missed lately
+date: 2023-05-17
+categories:
+  - frontend
+---
+
+We all know the HTML essentials - `<div>`, `<span>`, `<p>`, `<input>`. They're the bread and butter of web development, the building blocks we reach for constantly. And then there are those elements we use less often but still recognize, like `<section>` or `<article>`.
+
+But what I found out that there are some genuinely useful HTML features that often fly under the radar, yet can dramatically improve your web apps' performance, accessibility, and even security.
+
+## 1. The `<template>` Element
+
+When I need to dynamically add elements to a website with JavaScript, I'll be honest, my past self often reached for `innerHTML`. You grab an element, like an empty `<ul>`, and just write HTML straight into it.
+
+```html
+<ul id="myList"></ul>
+<button id="addItems">Add Items</button>
+```
+
+```javascript
+// A common (but flawed) approach I used to take
+const myList = document.getElementById("myList");
+const addItemsBtn = document.getElementById("addItems");
+
+addItemsBtn.addEventListener("click", () => {
+  myList.innerHTML += `
+    <li>Item 1</li>
+    <li>Item 2</li>
+  `;
+});
+```
+
+Yes, it's quick, but it always felt a bit messy. And when you're adding more complex elements, like table rows with many columns, it gets ugly fast. Syntax highlighting often breaks in the IDE, and the real kicker? It's extremely vulnerable to Cross-Site Scripting (XSS). User input passed to `innerHTML` could easily inject malicious HTML or JavaScript, becoming a serious security risk.
+
+A better approach, which I quickly learned, is using `document.createElement()`. This ensures user input is always rendered as plain text, never as HTML or JavaScript, making it much safer. You're working with real DOM elements, which is great.
+
+```javascript
+// A safer but still cumbersome approach for complex structures
+addItemsBtn.addEventListener("click", () => {
+  const newItem = document.createElement("li");
+  newItem.textContent = "A new item created safely";
+  myList.appendChild(newItem);
+});
+```
+
+However, this too becomes unhandy once the HTML gets more complex. You lose that nice, intuitive HTML tree structure. It's just not fun digging through JavaScript just to change a bit of markup.
+
+And that, my friends, is where the **`<template>` element** comes in!
+
+It's a native HTML element where you can write a snippet of HTML that you later want to insert dynamically. The browser _doesn't_ render this content initially, keeping it completely inert until you explicitly tell it to.
+
+Here's how I use it:
+
+```html
+<template id="listItemTemplate">
+  <li>
+    <strong class="item-title"></strong>
+    <span class="item-description"></span>
+  </li>
+</template>
+
+<ul id="myList"></ul>
+<button id="addItems">Add Items from Template</button>
+```
+
+```javascript
+const myList = document.getElementById("myList");
+const addItemsBtn = document.getElementById("addItems");
+const listItemTemplate = document.getElementById("listItemTemplate");
+
+addItemsBtn.addEventListener("click", () => {
+  // Clone the content of the template
+  const clone = listItemTemplate.content.cloneNode(true);
+
+  // Fill the cloned HTML node with data
+  clone.querySelector(".item-title").textContent = "My New Item";
+  clone.querySelector(".item-description").textContent =
+    "This was added from a template!";
+
+  // Append the element to the DOM
+  myList.appendChild(clone);
+});
+```
+
+It's a bit like JSX if you know that, but natively! It's inherently safer than `innerHTML` because you're manipulating real DOM nodes. Plus, it's more performant when adding multiple elements because `innerHTML` often forces the browser to re-layout everything you modify, while `appendChild` (with template clones) only affects the newly added DOM element. It's genuinely elegant, and I love how it keeps my markup clear and my dynamic insertions safe.
+
+## 2. `<input>` are more than you think
+
+I think it's fair to say that the `<input>` element is part of every web developer's standard toolkit. We all know text inputs, radio buttons, checkboxes, password inputs, and buttons. But did you know just how much configuration and native functionality is packed into this single tag?
+
+Let's look at some features I've found incredibly useful:
+
+### Basic Inputs with Hidden Powers
+
+Even standard text inputs can be refined with `type` attributes like `email` or `tel` for phone numbers. These give you basic, built-in validation (which you can visualize with the CSS `:invalid` pseudo-class) and, crucially, on mobile devices, they trigger the appropriate keyboard (like a numeric keypad for phone numbers).
+
+```html
+<input type="email" placeholder="Your email" required />
+<input
+  type="tel"
+  placeholder="Your phone number"
+  pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+/>
+```
+
+I've also fallen in love with the `pattern` attribute, which lets you use regular expressions for live validation in the browser, all without writing a single line of JavaScript! You're probably familiar with `minlength` and `maxlength`, and of course, `required` - but they're worth mentioning for completeness.
+
+### The Mighty `spellcheck` Attribute
+
+This is a small one, but incredibly useful for user experience. The `spellcheck` attribute lets you enable the browser's native spellchecking for an input field or even a `textarea`. As soon as the user starts typing, the spell checker kicks in.
+
+```html
+<textarea spellcheck="true" placeholder="Type your message here..."></textarea>
+```
+
+### Specialized Input Types for Rich UI
+
+This is where it gets really exciting for me. There are so many `type` attributes that provide rich UI components natively:
+
+- **`type="date"`**: Gives you a native date picker.
+- **`type="datetime-local"`**: For both date and time.
+- **`type="month"`**, **`type="week"`**, **`type="time"`**: For specific date/time parts.
+
+```html
+<label for="eventDate">Event Date:</label>
+<input type="date" id="eventDate" />
+
+<label for="appointmentTime">Appointment Time:</label>
+<input type="time" id="appointmentTime" />
+```
+
+All of these are baseline, meaning you can safely use them in all major browsers without relying on any UI library with custom controls and extra CSS. This significantly reduces bundle size and improves performance!
+
+- **`type="search"`**: This is basically a text input, but in some browsers, you get a built-in clear button, and on mobile devices, you get a little search-specific icon.
+- **`type="range"`**: Provides a slider control.
+- **`type="color"`**: Gives you a native color picker, just like the one I showed earlier with predefined values and the option to pick any arbitrary color.
+
+### The `<datalist>` native autocomplete with suggestions
+
+For inputs like `color`, text, or even time, there's another fantastic feature: the **`<datalist>` element**. It lets you show recommended options or a kind of preset selection for an input.
+
+I simply use `<option>` elements to define my suggestions within the `datalist`, give the `datalist` an `id`, and then reference that `id` from my `input` using the `list` attribute. Done! You've got suggestions for the user.
+
+```html
+<label for="favColor">Choose your favorite color:</label>
+<input type="color" id="favColor" list="colorSuggestions" />
+
+<datalist id="colorSuggestions">
+  <option value="#FF0000">Red</option>
+  <option value="#00FF00">Green</option>
+  <option value="#0000FF">Blue</option>
+  <option value="#FFFF00">Yellow</option>
+</datalist>
+
+<label for="themeInput">Select a theme:</label>
+<input
+  type="text"
+  id="themeInput"
+  list="themes"
+  placeholder="e.g., Dark, Light"
+/>
+
+<datalist id="themes">
+  <option value="Light"></option>
+  <option value="Dark"></option>
+  <option value="High Contrast"></option>
+  <option value="Sepia"></option>
+</datalist>
+```
+
+It's basically like a native autocomplete. While I have to admit `datalist` support can be a bit inconsistent across browsers (Firefox, for example, has some quirks), and every browser/OS renders it differently, for simple use cases, I find it incredibly powerful for offering suggestions without any JavaScript. It truly shows how much you can get out of inputs without heavy libraries.
+
+## 3. Making Elements Un-interactable with `inert`
+
+This is a relatively newer HTML feature, an attribute that honestly makes me wonder why it didn't exist 20 years ago! It enables something incredibly simple that used to be annoyingly complicated: making parts of your page `inert`.
+
+So, when do I need this? For example, when working with dialogues, overlays, or menus. You often want all user interaction to be focused on the current overlay - think of a modal. Nothing in the background should be clickable or focusable anymore. But if you just render an element in the middle of the screen, the background by default is still fully interactive.
+
+I used to hack around with `pointer-events: none` on background elements or throw an invisible overlay across the page to block clicks. But these are all workarounds.
+
+Instead, you can take any content element, even just a `div`, and add the **`inert` attribute**. That element and all its child elements - including links, buttons, and inputs - can no longer receive focus or be clicked at all.
+
+```html
+<div class="page-container">
+  <header>...</header>
+  <main inert>
+    <h1>Background Content</h1>
+    <p>This content should not be interactive when the modal is open.</p>
+    <a href="#">Clickable link</a>
+    <button>Interactive button</button>
+    <input type="text" value="Focusable input" />
+  </main>
+  <footer>...</footer>
+</div>
+
+<div class="modal">
+  <h2>Welcome to the Modal!</h2>
+  <p>Please interact with me.</p>
+  <button>Close</button>
+</div>
+```
+
+In this example, when the modal is open, I'd apply `inert` to the `<main>` element. Perfect for a foreground modal where I simply mark the rest of the page as `inert`. No need to manually disable every form element! One attribute on a parent is enough.
+
+What's more, `inert` elements are also removed from the tab order and the accessibility tree. This makes it semantically correct, not just visually or interactively disabled. It's a game-changer for accessibility and simplifying complex UI states.
+
+## Conclusion
+
+There you have it - a glimpse into some incredibly powerful, yet often overlooked, HTML features. From the elegant `<template>` element for dynamic content to the versatile range of `<input>` types and the game-changing `inert` attribute for managing focus, these native HTML solutions can genuinely elevate your web development game.
+
+They offer improved performance, better accessibility, and often lead to cleaner, more maintainable code. I encourage you to experiment with them in your next project. You might be surprised by how much you can achieve with just a little more HTML knowledge!
