@@ -17,11 +17,7 @@ export function Toc({ items, className }: TocProps) {
 
   return (
     <nav
-      className={cn(
-        "max-h-[calc(100vh-8rem)] overflow-y-auto",
-        "border-l border-foreground/10 pl-4",
-        className
-      )}
+      className={cn("max-h-[calc(100vh-8rem)] overflow-y-auto", className)}
       aria-label="Table of contents"
     >
       <h2 className="text-sm font-semibold text-foreground/70 mb-3">
