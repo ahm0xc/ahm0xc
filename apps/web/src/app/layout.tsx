@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Pixelify_Sans } from "next/font/google";
 
+import { Analytics } from "@vercel/analytics/next";
 import { GeistSans } from "geist/font/sans";
 
 import { Footer } from "~/components/footer";
@@ -38,6 +39,7 @@ export default function RootLayout({
           GeistSans.variable
         )}
       >
+        <Analytics />
         <TRPCReactProvider>
           <ThemeProvider>
             <Navbar />
