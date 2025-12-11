@@ -35,6 +35,15 @@ If you are using a standard image like `node:20` or `python:3.9`, you are essent
 
 Alpine Linux is a super lightweight distribution. By simply changing your base image to something like `node:20-alpine`, you strip away the heavy operating system layers.
 
+```Dockerfile
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --ignore-scripts
+COPY . .
+CMD ["npm", "start"]
+```
+
 In my experiment, just doing this one thing cut the image size by nearly **half**. We literally did nothing else but change one word!
 
 ## Step 2: Multi-stage builds
@@ -51,6 +60,28 @@ Think of it like cooking dinner. You need knives, cutting boards, and peelers to
 
 By doing this, we leave behind all the "dirty kitchen tools" like compilers and source code caches. This usually shaves off another big chunk of megabytes.
 
+```Dockerfile
+# Installation Stage
+FROM node:20-alpine AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --ignore-scripts
+# Build Stage
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npm run build
+# Production Stage
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+CMD ["node", "server.js"]
+```
+
 ## Step 3: Trim build output
 
 We are doing great, but we can go further.
@@ -66,6 +97,13 @@ Most build tools have a setting that says, "Hey, figure out exactly which files 
 - It puts them into a single, tidy folder.
 
 When you copy _only_ this standalone folder into your final Docker image—instead of your entire project directory—the results are magic. You are no longer guessing what to include; the computer does it for you.
+
+```javascript
+// only for nextjs
+module.exports = {
+  output: "standalone",
+};
+```
 
 ## Handle static files
 
