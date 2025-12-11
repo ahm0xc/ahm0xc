@@ -6,6 +6,8 @@ import { Icons } from "~/components/icons";
 import { getWritingBySlug, getWritingSlugs } from "~/lib/content";
 import { cn } from "~/lib/utils";
 
+import Aside from "./aside";
+
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
@@ -48,10 +50,11 @@ export default async function Page({
 }) {
   const { slug } = await params;
 
-  const { content, frontmatter } = await getWritingBySlug(slug);
+  const { content, frontmatter, toc } = await getWritingBySlug(slug);
 
   return (
-    <div>
+    <div className="lg:flex">
+      <div className="flex-1 hidden lg:block" />
       <Container className="pt-36 max-w-xl mx-auto">
         <div>
           <button className="mb-4">
@@ -79,6 +82,9 @@ export default async function Page({
           {content}
         </article>
       </Container>
+      <div className="flex-1 hidden lg:flex lg:justify-end">
+        <Aside toc={toc} />
+      </div>
     </div>
   );
 }

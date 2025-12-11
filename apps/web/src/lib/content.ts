@@ -1,11 +1,14 @@
 import fs from "fs/promises";
 import { compileMDX } from "next-mdx-remote/rsc";
 import path from "path";
+import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import { highlight as remarkHighlight } from "remark-sugar-high";
 import * as z from "zod/mini";
 
 import { mdxComponents } from "~/components/mdx-components";
+
+import { extractToc } from "./toc-utils";
 
 export const WRITING_CATEGORIES = ["database", "backend", "frontend"] as const;
 
@@ -31,12 +34,15 @@ export async function getWritingBySlug(slug: string) {
   );
   const source = await fs.readFile(filePath, "utf8");
 
+  const toc = await extractToc(source);
+
   const { content, frontmatter } = await compileMDX({
     source,
     options: {
       parseFrontmatter: true,
       mdxOptions: {
         remarkPlugins: [remarkGfm, remarkHighlight],
+        rehypePlugins: [rehypeSlug],
       },
     },
     components: mdxComponents,
@@ -52,6 +58,7 @@ export async function getWritingBySlug(slug: string) {
     content,
     frontmatter: validatedFrontmatter.data,
     slug,
+    toc,
   };
 }
 
