@@ -31,14 +31,6 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script
-          src="https://cloud.umami.is/script.js"
-          data-website-id="221f233f-00f3-4b81-bd31-018b357ad4b4"
-          defer
-        />
-      </head>
-
       <body
         className={cn(
           "antialiased min-h-screen flex flex-col font-sans",
