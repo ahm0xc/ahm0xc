@@ -95,7 +95,7 @@ function NavbarItem({ title, href, isActive, shortcut, hidden }: NavItem) {
           isActive && "text-primary"
         )}
       >
-        <span className="font-mono text-muted-foreground/80 text-sm hidden lg:flex">
+        <span className="font-mono text-muted-foreground/80 text-sm hidden lg:inline-block">
           [{shortcut}]
         </span>{" "}
         {title}
