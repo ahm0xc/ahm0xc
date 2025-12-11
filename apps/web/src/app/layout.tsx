@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Pixelify_Sans } from "next/font/google";
+import Script from "next/script";
 
 import { GeistSans } from "geist/font/sans";
 
@@ -31,6 +32,14 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <Script
+          src="https://cloud.umami.is/script.js"
+          data-website-id="221f233f-00f3-4b81-bd31-018b357ad4b4"
+          defer
+        />
+      </head>
+
       <body
         className={cn(
           "antialiased min-h-screen flex flex-col font-sans",
