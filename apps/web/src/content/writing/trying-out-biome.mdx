@@ -1,0 +1,60 @@
+---
+title: Trying out Biome
+date: 2025-12-11
+categories:
+  - dev-tools
+---
+
+As a developer, you probably know the drill. You start a new project, and the first thing you do is spend an hour setting up **ESLint** to catch errors and **Prettier** to make your code look nice. Then, you have to make sure they play nicely together so they don't fight over where a semicolon goes.
+
+It works, but it can be a bit of a headache. Plus, as your project gets bigger, these tools can get... slow.
+
+Well, I recently went exploring and found a new tool called **Biome**. It promises to change everything. Let's dive in and see what the fuss is about!
+
+## What is Biome?
+
+Think of Biome as the "Swiss Army Knife" for your code. Instead of having one tool for checking errors (linting) and another tool for formatting (styling), Biome does **both**.
+
+But here is the secret sauce: it is written in **Rust**.
+
+If you don't know what Rust is, don't worry. All you need to know is that it is a programming language that is incredibly fast. Because Biome is built with it, it can process your code much, much faster than the tools we are used to.
+
+## Biome vs. ESLint & Prettier
+
+Let's compare Biome to our old friends, ESLint and Prettier.
+
+### 1. Speed
+
+This is the biggest difference.
+
+- **ESLint/Prettier:** These run on Node.js. They are good, but they can get sluggish on huge projects.
+- **Biome:** It is lightning fast. It can format and lint a massive project in a fraction of the time. It feels instant.
+
+### 2. Simplicity
+
+- **ESLint/Prettier:** You usually need a `.eslintrc` file, a `.prettierrc` file, and maybe a `.prettierignore` file. Then you need to install plugins to make them work together. It’s a lot of configuration.
+- **Biome:** You just install one thing. It has sensible defaults that "just work." You have one configuration file (`biome.json`), and that's it. No more "config hell."
+
+### 3. The Ecosystem
+
+This is where the old guard still wins.
+
+- **ESLint:** It has been around for ages. If you need a very specific rule for a specific framework, there is probably a plugin for it.
+- **Biome:** It is newer. It has great support for React and TypeScript, but it doesn't have the thousands of community plugins that ESLint has yet.
+
+## Ultracite
+
+While exploring, I also found a cool project called [Ultracite](https://www.ultracite.ai).
+
+If Biome is a fast sports car, Ultracite is like a self-driving mode for that car. It is a tool built _on top_ of Biome. It comes pre-configured with the best settings for modern frameworks like Next.js and React.
+
+It's "zero-config," meaning you don't even have to touch a settings file. It also focuses on being friendly for AI coding assistants, keeping the code style consistent so your AI tools don't get confused. If you want to try Biome but don't want to set up _anything_ manually, check out Ultracite.
+
+## Should You Switch?
+
+So, is it time to delete ESLint? Maybe.
+
+- **Stick with ESLint if:** You are working on an older project with very specific custom rules that you can't live without.
+- **Try Biome if:** You are starting a new project, or if your current project is so big that saving a file takes too long. The speed difference really makes coding feel fun again.
+
+Give it a try on a small weekend project. You might find it hard to go back to the slow lane!

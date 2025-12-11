@@ -10,7 +10,12 @@ import { mdxComponents } from "~/components/mdx-components";
 
 import { extractToc } from "./toc-utils";
 
-export const WRITING_CATEGORIES = ["database", "backend", "frontend"] as const;
+export const WRITING_CATEGORIES = [
+  "database",
+  "backend",
+  "frontend",
+  "dev-tools",
+] as const;
 
 export const writingFrontmatterSchema = z.object({
   title: z.string(),
