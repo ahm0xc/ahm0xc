@@ -5,14 +5,18 @@ import { Suspense, lazy } from "react";
 import { useTheme } from "next-themes";
 
 import useMounted from "~/hooks/use-mounted";
+import { useSnowfallStore } from "~/store/snowfall-store";
 
 const Snowfall = lazy(() => import("react-snowfall"));
 
 export default function SnowFall() {
   const { resolvedTheme } = useTheme();
   const mounted = useMounted();
+  const { isEnabled } = useSnowfallStore();
 
   if (!mounted) return null;
+
+  if (!isEnabled) return null;
 
   if (resolvedTheme === "dark")
     return (

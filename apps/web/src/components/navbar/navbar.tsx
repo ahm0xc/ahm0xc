@@ -8,6 +8,7 @@ import { useTheme } from "next-themes";
 import { useHotkeys } from "~/hooks/use-hotkey/use-hotkey";
 import useMounted from "~/hooks/use-mounted";
 import { cn } from "~/lib/utils";
+import { useSnowfallStore } from "~/store/snowfall-store";
 
 import { Icons } from "../icons";
 
@@ -24,6 +25,8 @@ export default function Navbar() {
   const { resolvedTheme, setTheme } = useTheme();
   const mounted = useMounted();
   const router = useRouter();
+  const { isEnabled: isSnowfallEnabled, toggle: toggleSnowfall } =
+    useSnowfallStore();
 
   useHotkeys([
     ["h", () => router.push("/")],
@@ -71,6 +74,14 @@ export default function Navbar() {
           {navItems.map((item) => {
             return <NavbarItem key={item.title} {...item} />;
           })}
+          <button onClick={toggleSnowfall} title="Toggle Snowfall">
+            <Icons.snow
+              className={cn(
+                "text-muted-foreground",
+                isSnowfallEnabled && "text-blue-500"
+              )}
+            />
+          </button>
           <button onClick={toggleTheme} title="Toggle theme">
             {mounted && resolvedTheme === "dark" ? (
               <Icons.sun className="text-muted-foreground" />
