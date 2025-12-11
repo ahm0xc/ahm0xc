@@ -1,0 +1,89 @@
+---
+title: Shrinking Docker Image Size by 15x
+date: 2024-02-25
+categories:
+  - dev-tools
+---
+
+Have you ever finished building a Docker image for your application, only to realize it's absolutely massive? I'm talking 2GB or more for a simple web app.
+
+It happens to the best of us. A huge image is a pain—it takes forever to push to your registry, forever to pull down to your server, and eats up storage space.
+
+I recently explored a workflow that took a Docker image from nearly **2GB down to just 135MB**. That is a 15x reduction! And the best part? The app works exactly the same way.
+
+Let's explore how to do this step-by-step. We are going to treat this like a diet plan for your code.
+
+## Starting with fat image
+
+Most of us start with a simple Dockerfile. We pick a standard base image (like Node.js or Python), copy absolutely everything from our project folder, install all the libraries, and build.
+
+When you do this, you are including a lot of junk you don't need:
+
+- Unused operating system tools.
+- Development files.
+- Temporary caches.
+
+The result is a bloated image. Let's see how we can trim the fat.
+
+## Step 1: Use a small base
+
+The first step is the easiest. Look at the first line of your Dockerfile.
+
+If you are using a standard image like `node:20` or `python:3.9`, you are essentially downloading a full operating system. It has tools you will never use, like image editors or complex system utilities.
+
+**The Fix:** Switch to an "Alpine" version.
+
+Alpine Linux is a super lightweight distribution. By simply changing your base image to something like `node:20-alpine`, you strip away the heavy operating system layers.
+
+In my experiment, just doing this one thing cut the image size by nearly **half**. We literally did nothing else but change one word!
+
+## Step 2: Multi-stage builds
+
+Even with a smaller base, we still have a problem. When you build your application, you need tools that you don't need when running it.
+
+Think of it like cooking dinner. You need knives, cutting boards, and peelers to _prepare_ the meal. But when you serve the food to a guest, you don't put the dirty cutting board on their table. You just serve the food.
+
+**Multi-stage builds** let us do exactly that with Docker.
+
+1.  **The "Deps" Stage:** We create a temporary image just to install our dependencies (libraries).
+2.  **The "Builder" Stage:** We use those dependencies to compile our code.
+3.  **The "Runner" Stage:** This is the final image. We copy **only** the finished, cooked meal (the built application) from the previous stage.
+
+By doing this, we leave behind all the "dirty kitchen tools" like compilers and source code caches. This usually shaves off another big chunk of megabytes.
+
+## Step 3: Trim build output
+
+We are doing great, but we can go further.
+
+Many modern web frameworks (and languages) default to including a lot of files "just in case." They might assume you want to keep the entire `node_modules` folder or every single configuration file.
+
+**The Fix:** Configure your tool for "Standalone" or "Production" output.
+
+Most build tools have a setting that says, "Hey, figure out exactly which files are needed to run this app, and ignore everything else."
+
+- It traces your code.
+- It finds exactly which libraries are actually used.
+- It puts them into a single, tidy folder.
+
+When you copy _only_ this standalone folder into your final Docker image—instead of your entire project directory—the results are magic. You are no longer guessing what to include; the computer does it for you.
+
+## Handle static files
+
+If your application serves images, fonts, or CSS files directly (often called the "public" or "static" folder), you need to be careful.
+
+Sometimes, the optimization step above might skip these folders because they aren't "code."
+
+- **Best Practice:** Ideally, host these on a CDN (Content Delivery Network) so your Docker container doesn't have to carry them.
+- **Alternative:** If you must keep them, make sure you explicitly copy your `public` folder into the final image.
+
+## The Result
+
+By following this flow:
+
+1.  Switching to an **Alpine** base.
+2.  Using **Multi-stage** builds to leave build tools behind.
+3.  Configuring the build for **Standalone** output.
+
+We went from a 2GB monster to a lean, mean 135MB machine. The functionality is identical, but your deployments will be faster, and your servers will thank you.
+
+Check your Dockerfiles today—you might be carrying a lot of extra weight!
