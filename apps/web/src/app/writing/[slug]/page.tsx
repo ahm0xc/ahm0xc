@@ -82,7 +82,7 @@ export default async function Page({
           {content}
         </article>
       </Container>
-      <div className="flex-1 hidden lg:flex lg:justify-end">
+      <div className="flex-1 hidden lg:flex lg:pl-8">
         <Aside toc={toc} />
       </div>
     </div>

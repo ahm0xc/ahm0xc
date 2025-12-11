@@ -9,17 +9,17 @@ As a developer constantly looking for ways to build faster, more robust applicat
 
 It's genuinely surprising to me that more people aren't talking about this. Elysia feels like an underdog in the crowded JavaScript ecosystem — it's not venture-backed, it's small, community-driven, and completely open source. But let me tell you, it's _really, really good_.
 
-## What Exactly is Elysia.js?
+## What is Elysia.js?
 
 At its core, Elysia is a web framework. You might be thinking, "Okay, another framework, what's new?" But what sets Elysia apart is its radical approach to performance and type safety. I've used frameworks like Hono in the past, which is fantastic for defining backends in a very straightforward and type-safe manner. You know, `app.get('/path', () => response)`. It's clean, it's effective.
 
-### Built on Bun: Performance at Its Core
+### Built on Bun
 
 Elysia takes that concept and supercharges it by leveraging **Bun**. Yes, the venture-backed runtime, package manager, and all-in-one JavaScript toolkit. Elysia is one of the first major frameworks to embrace Bun by default, making full use of its native APIs.
 
 Why does Bun matter so much? Because Bun is _insanely fast_. When you compare a simple "Hello World" Express.js server to one built with Bun, Bun leaves Node.js (and even Deno) in the dust. Elysia's genius lies in its ability to harness Bun's raw speed directly into a developer-friendly framework. This is a relatively new concept that's working incredibly well for them.
 
-### A Familiar API
+### Familiar API
 
 If you've ever used Hono, Elysia's API will feel instantly familiar. You instantiate an `Elysia` app and then define your HTTP paths:
 
@@ -40,7 +40,7 @@ export type App = typeof app;
 
 This clean syntax isn't just for show. It combines a very fast runtime with an incredibly clean and developer-friendly experience.
 
-## Why Elysia is a Game Changer for Next.js APIs
+## Why it fits Next.js
 
 I first heard about Elysia a couple of weeks ago through a tweet by its creator, SaltyAOM. His plea, "Please give Elysia a chance. I beg you," might not be the most confident intro, but the claims he made were compelling:
 
@@ -51,27 +51,27 @@ I first heard about Elysia a couple of weeks ago through a tweet by its creator,
 - **Built-in OpenTelemetry (OTEL) and observability.**
 - **Performance near Golang or Rust.** This is a bold claim, but it highlights how far the JS/TS ecosystem has come.
 
-### WinterTC Compliance: The Vercel Connection
+### WinterTC Compliance
 
 One of the most critical aspects for Next.js developers is its **WinterTC compliance**. WinterTC (Web-interoperable Runtimes Community Group) is an open standard backed by companies like Vercel, aiming to make JavaScript runtimes interoperable. It defines a minimum API that ensures your code can run seamlessly across different platforms like Vercel, Netlify, and Cloudflare Workers.
 
 This compliance is _key_ because it directly enables Elysia to be deployed efficiently on Vercel. In fact, Vercel developers themselves recently announced live support for Elysia! They automatically detect Elysia apps and provision optimal resources, which is fantastic news for Next.js users.
 
-## The Problem with Traditional Next.js API Routes
+## The Next.js API pain
 
 Let's be honest: the standard way of building APIs in Next.js isn't ideal for complex applications. I've found it quite frustrating. You often end up with a file for each piece of functionality: `api/users/route.ts` for getting users, `api/users/update/route.ts` for updating them, and separate files for authentication. This quickly becomes messy and difficult to manage as your application grows. Everybody starts this way, myself included, but there's a much better pattern.
 
-### Using a Catch-All Route for Centralized API Handling
+### Catch-all route
 
 The much better way, which many developers aren't aware of, involves using a central "catch-all route" within Next.js. Instead of sending requests directly to individual API handlers, you proxy them through one central location. This is precisely how we can integrate Elysia into Next.js and achieve that convenient, type-safe, and blazingly fast experience.
 
 When a request comes into your Next.js app, it hits this single catch-all endpoint, which then forwards the request to the appropriate Elysia handler.
 
-## Integrating Elysia with Next.js App Router
+## Hooking into App Router
 
 Integrating Elysia with the Next.js App Router is surprisingly simple, taking just a couple of minutes to set up.
 
-### Setting Up the Catch-All Route Handler
+### Set up the catch-all
 
 You start by creating a catch-all route file, typically something like `src/app/api/[...slugs]/route.ts`. This file will serve as the entry point for all your API requests.
 
@@ -102,13 +102,13 @@ export const DELETE = ({ request }: { request: Request }) => app.fetch(request);
 
 With this setup, all requests hitting `/api/*` will be handled by your Elysia instance, giving you a centralized, highly performant, and type-safe API layer within your Next.js application.
 
-## Real-World Performance That Impresses
+## Performance in practice
 
 The benchmarks speak for themselves. In plain text requests per second, Elysia clocks in at an astonishing 2.5 million, dwarfing even highly optimized Go HTTP frameworks like Gin, which might hit around 700,000. These aren't just theoretical numbers.
 
 I saw a real-world demo involving a Lambda function in the EU central (Frankfurt) region querying an Elysia endpoint in the same region. After initial cold starts, the latency consistently hovered around 25-30 milliseconds per request. That kind of speed, directly within your Next.js application, is genuinely impressive and can significantly improve the responsiveness of your app.
 
-## Conclusion: Give Elysia a Chance!
+## Try Elysia
 
 Discovering Elysia has been a revelation for me. It offers a truly superior way to build Next.js APIs - one that is not only blazingly fast and incredibly type-safe but also remarkably easy to integrate. The combination of Bun's performance, Elysia's elegant API, and its Web-interoperable (WinterTC) compliance makes it a powerhouse for modern web development, especially for those deploying to Vercel.
 
