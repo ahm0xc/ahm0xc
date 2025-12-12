@@ -63,6 +63,11 @@ export default function Navbar() {
     },
   ];
 
+  function handleToggleSnowfall() {
+    if (resolvedTheme === "light") return;
+    toggleSnowfall();
+  }
+
   function toggleTheme() {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   }
@@ -74,11 +79,15 @@ export default function Navbar() {
           {navItems.map((item) => {
             return <NavbarItem key={item.title} {...item} />;
           })}
-          <button onClick={toggleSnowfall} title="Toggle Snowfall">
+          <button
+            className="cursor-not-allowed dark:cursor-auto hidden md:block"
+            onClick={handleToggleSnowfall}
+            title="Toggle Snowfall"
+          >
             <Icons.snow
               className={cn(
                 "text-muted-foreground",
-                isSnowfallEnabled && "text-blue-500"
+                !isSnowfallEnabled && "text-destructive-foreground"
               )}
             />
           </button>
