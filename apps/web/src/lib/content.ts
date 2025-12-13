@@ -15,6 +15,7 @@ export const WRITING_CATEGORIES = [
   "backend",
   "frontend",
   "dev-tools",
+  "others",
 ] as const;
 
 export const writingFrontmatterSchema = z.object({
@@ -22,6 +23,7 @@ export const writingFrontmatterSchema = z.object({
   date: z.string(),
   categories: z.array(z.enum(WRITING_CATEGORIES)),
   description: z.optional(z.string()),
+  draft: z.optional(z.boolean()),
 });
 
 export async function getWritingSlugs(): Promise<string[]> {
@@ -67,7 +69,13 @@ export async function getWritingBySlug(slug: string) {
   };
 }
 
-export async function getAllWritings() {
+interface GetAllWritingsBlog {
+  includeDraft?: boolean;
+}
+
+export async function getAllWritings(
+  { includeDraft }: GetAllWritingsBlog = { includeDraft: false }
+) {
   const slugs = await getWritingSlugs();
   const writings = await Promise.all(
     slugs.map(async (slug) => await getWritingBySlug(slug))
@@ -76,6 +84,7 @@ export async function getAllWritings() {
   const validatedWritings = writings.filter((writing) => {
     try {
       writingFrontmatterSchema.parse(writing.frontmatter);
+      if (writing.frontmatter.draft && !includeDraft) return false;
       return true;
     } catch {
       return false;

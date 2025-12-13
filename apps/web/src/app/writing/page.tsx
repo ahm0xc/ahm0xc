@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { draftMode } from "next/headers";
 import Link from "next/link";
 
 import Container from "~/components/container";
@@ -20,7 +21,8 @@ export const metadata: Metadata = {
 };
 
 export default async function WritingPage() {
-  const writings = await getAllWritings();
+  const draft = await draftMode();
+  const writings = await getAllWritings({ includeDraft: draft.isEnabled });
 
   return (
     <Container className="max-w-2xl w-full pt-32">
