@@ -32,7 +32,6 @@ export default function Navbar() {
     ["h", () => router.push("/")],
     ["p", () => router.push("/projects")],
     ["w", () => router.push("/writing")],
-    ["r", () => router.push("/resume")],
   ]);
 
   const navItems: NavItem[] = [
@@ -55,12 +54,6 @@ export default function Navbar() {
       isActive: pathname === "/writing",
       shortcut: "w",
     },
-    {
-      title: "resume",
-      href: "/resume",
-      isActive: pathname === "/resume",
-      shortcut: "r",
-    },
   ];
 
   function handleToggleSnowfall() {
@@ -79,11 +72,7 @@ export default function Navbar() {
           {navItems.map((item) => {
             return <NavbarItem key={item.title} {...item} />;
           })}
-          <button
-            className="cursor-not-allowed dark:cursor-auto hidden md:block"
-            onClick={handleToggleSnowfall}
-            title="Toggle Snowfall"
-          >
+          <button onClick={handleToggleSnowfall} title="Toggle Snowfall">
             <Icons.snow
               className={cn(
                 "text-muted-foreground",
