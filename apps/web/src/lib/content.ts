@@ -58,7 +58,9 @@ export async function getWritingBySlug(slug: string) {
   const validatedFrontmatter = writingFrontmatterSchema.safeParse(frontmatter);
 
   if (!validatedFrontmatter.success || validatedFrontmatter.error) {
-    throw new Error(`Invalid frontmatter for ${slug}`);
+    throw new Error(
+      `Invalid frontmatter for ${slug} - ${validatedFrontmatter.error.message}`
+    );
   }
 
   return {
@@ -99,4 +101,87 @@ export async function getAllWritings(
   });
 
   return sortedWritings;
+}
+
+export const projectFrontmatterSchema = z.object({
+  name: z.string(),
+  banner: z.string(),
+  bannerHash: z.optional(z.string()),
+  dateStart: z.string(),
+  dateEnd: z.optional(z.string()),
+  overview: z.string(),
+  shortDescription: z.optional(z.string()),
+  team: z.optional(z.array(z.string())),
+  tools: z.array(z.string()),
+  type: z._default(z.string(), "Project"),
+});
+
+export async function getProjectSlugs(): Promise<string[]> {
+  const contentDir = path.join(process.cwd(), "src/content/project");
+  const fileNames = await fs.readdir(contentDir);
+
+  return fileNames.map((fileName) => fileName.replace(/\.mdx$/, ""));
+}
+
+export async function getProjectBySlug(slug: string) {
+  const filePath = path.join(
+    process.cwd(),
+    "src/content/project",
+    `${slug}.mdx`
+  );
+  const source = await fs.readFile(filePath, "utf8");
+
+  const toc = await extractToc(source);
+
+  const { content, frontmatter } = await compileMDX({
+    source,
+    options: {
+      parseFrontmatter: true,
+      mdxOptions: {
+        remarkPlugins: [remarkGfm, remarkHighlight],
+        rehypePlugins: [rehypeSlug],
+      },
+    },
+    components: mdxComponents,
+  });
+
+  const validatedFrontmatter = projectFrontmatterSchema.safeParse(frontmatter);
+
+  if (!validatedFrontmatter.success || validatedFrontmatter.error) {
+    throw new Error(
+      `Invalid frontmatter for ${slug} - ${validatedFrontmatter.error.message}`
+    );
+  }
+
+  return {
+    content,
+    frontmatter: validatedFrontmatter.data,
+    slug,
+    toc,
+  };
+}
+
+export async function getAllProjects() {
+  const slugs = await getProjectSlugs();
+  const projects = await Promise.all(
+    slugs.map(async (slug) => await getProjectBySlug(slug))
+  );
+
+  const validatedProjects = projects.filter((project) => {
+    try {
+      projectFrontmatterSchema.parse(project.frontmatter);
+      return true;
+    } catch {
+      return false;
+    }
+  });
+
+  const sortedProjects = validatedProjects.sort((a, b) => {
+    return (
+      new Date(b.frontmatter.dateStart).getTime() -
+      new Date(a.frontmatter.dateStart).getTime()
+    );
+  });
+
+  return sortedProjects;
 }
