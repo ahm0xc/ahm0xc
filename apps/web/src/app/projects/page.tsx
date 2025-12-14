@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 
 import Container from "~/components/container";
@@ -23,34 +22,41 @@ export const metadata: Metadata = {
 export default async function ProjectsPage() {
   const projects = await getAllProjects();
 
+  function getMiniBanner(bannerUrl: string): string {
+    const bannerSplit = bannerUrl.split("/assets/project/");
+    return `/assets/project/mini-${bannerSplit[1]}`;
+  }
+
   return (
     <Container className="w-full pt-32">
       <div>
         <ul className="grid grid-cols-1 gap-8">
-          {projects.map((project) => (
-            <li key={project.slug} className="text-base md:text-lg group">
-              <Link href={`/projects/${project.slug}`}>
-                <Image
-                  src={project.frontmatter.banner}
-                  width={600}
-                  height={350}
-                  alt=""
-                />
-                <div className="mt-3">
-                  <p className="text-2xl font-medium font-pixel">
-                    <span className="group-hover:underline">
-                      {project.frontmatter.name}
-                    </span>{" "}
-                    {" — "}
-                    {new Date(project.frontmatter.dateStart).getFullYear()}
-                  </p>
-                  <p className="text-base text-foreground/80">
-                    {project.frontmatter.shortDescription}
-                  </p>
-                </div>
-              </Link>
-            </li>
-          ))}
+          {projects.map((project) => {
+            return (
+              <li key={project.slug} className="text-base md:text-lg group">
+                <Link href={`/projects/${project.slug}`}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={getMiniBanner(project.frontmatter.banner)}
+                    className="aspect-video w-full h-auto bg-muted"
+                    alt=""
+                  />
+                  <div className="mt-3">
+                    <p className="text-2xl font-medium font-pixel">
+                      <span className="group-hover:underline">
+                        {project.frontmatter.name}
+                      </span>{" "}
+                      {" — "}
+                      {new Date(project.frontmatter.dateStart).getFullYear()}
+                    </p>
+                    <p className="text-base text-foreground/80">
+                      {project.frontmatter.shortDescription}
+                    </p>
+                  </div>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </Container>

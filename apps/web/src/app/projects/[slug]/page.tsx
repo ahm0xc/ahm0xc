@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 
 import { formatDate } from "date-fns";
@@ -64,11 +63,10 @@ export default async function Page({
           </p>
         </div>
         <div className="mt-8">
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={frontmatter.banner}
-            width={720}
-            height={540}
-            className="w-full h-auto max-w-full"
+            className="w-full h-auto aspect-video bg-muted"
             alt=""
           />
         </div>
