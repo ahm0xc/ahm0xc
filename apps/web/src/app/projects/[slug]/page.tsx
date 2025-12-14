@@ -71,7 +71,7 @@ export default async function Page({
             <div>
               <p>Overview</p>
               <div className="text-foreground/80 mt-1 text-[15px] space-y-2">
-                {frontmatter.overview.split("\n").map((x, idx) => (
+                {frontmatter.overview.split("\\n").map((x, idx) => (
                   <p
                     key={`${frontmatter.name}-overview-block-${idx}`}
                     className=""
