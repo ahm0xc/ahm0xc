@@ -64,7 +64,13 @@ export default async function Page({
           </p>
         </div>
         <div className="mt-8">
-          <Image src={frontmatter.banner} width={720} height={540} alt="" />
+          <Image
+            src={frontmatter.banner}
+            width={720}
+            height={540}
+            className="w-full h-auto max-w-full"
+            alt=""
+          />
         </div>
         <div className="mt-4 flex flex-col md:flex-row-reverse gap-8 md:gap-6">
           <div className="space-y-6 md:flex-1">
