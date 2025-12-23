@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Pixelify_Sans } from "next/font/google";
+import { Newsreader } from "next/font/google";
 
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -13,12 +13,12 @@ import { cn, getBaseUrl } from "~/lib/utils";
 import "~/styles/globals.css";
 import { TRPCReactProvider } from "~/trpc/react";
 
-const fontPixel = Pixelify_Sans({
+const fontSerif = Newsreader({
   subsets: ["latin"],
-  variable: "--font-pixel",
+  variable: "--font-serif",
   display: "swap",
   preload: false,
-  weight: ["400", "700"],
+  weight: ["400", "600"],
 });
 
 export const metadata: Metadata = {
@@ -36,7 +36,7 @@ export default function RootLayout({
       <body
         className={cn(
           "antialiased min-h-screen flex flex-col font-sans",
-          fontPixel.variable,
+          fontSerif.variable,
           GeistSans.variable
         )}
       >

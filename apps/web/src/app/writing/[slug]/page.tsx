@@ -66,7 +66,7 @@ export default async function Page({
               <span>Back</span>
             </Link>
           </button>
-          <h1 className="font-pixel text-5xl font-semibold">
+          <h1 className="font-serif text-5xl italic">
             {frontmatter.title as string}
           </h1>
           <p className="text-sm text-foreground/80 mt-2">
@@ -76,6 +76,7 @@ export default async function Page({
         <article
           className={cn(
             "pt-6 prose dark:prose-invert prose-stone",
+            "prose-headings:font-serif",
             "prose-h2:mt-12 prose-h2:mb-2"
           )}
         >

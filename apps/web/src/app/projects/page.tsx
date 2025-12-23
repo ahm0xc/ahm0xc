@@ -42,7 +42,7 @@ export default async function ProjectsPage() {
                     alt=""
                   />
                   <div className="mt-3">
-                    <p className="text-2xl font-medium font-pixel">
+                    <p className="text-2xl font-medium font-serif">
                       <span className="group-hover:underline">
                         {project.frontmatter.name}
                       </span>{" "}

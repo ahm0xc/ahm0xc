@@ -100,7 +100,6 @@
 
 @theme inline {
   --font-sans: var(--font-geist-sans);
-  --font-pixel: var(--font-pixel);
   --font-serif: var(--font-serif);
 
   --breakpoint-tablet: 40rem;

@@ -19,8 +19,8 @@ export async function GET(request: NextRequest) {
     path.join(process.cwd(), "public", "opengraph-template.png")
   );
 
-  const fontPixel = readFileSync(
-    path.join(process.cwd(), "public", "pixelify-sans.ttf")
+  const fontSerif = readFileSync(
+    path.join(process.cwd(), "public", "InstrumentSerif-Regular.ttf")
   );
 
   return new ImageResponse(
@@ -28,11 +28,11 @@ export async function GET(request: NextRequest) {
       <div
         tw="w-full h-full flex"
         style={{
-          fontFamily: "Pixel",
+          fontFamily: "Serif",
           backgroundImage: `url(data:image/png;base64,${template.toString("base64")})`,
         }}
       >
-        <div tw="absolute bottom-0 left-0 p-8 max-w-[1000px] flex">
+        <div tw="absolute bottom-0 left-0 p-16 max-w-[900px] flex">
           <p tw="text-[80px] text-white">{title}</p>
         </div>
       </div>
@@ -41,8 +41,8 @@ export async function GET(request: NextRequest) {
       ...size,
       fonts: [
         {
-          name: "Pixel",
-          data: fontPixel,
+          name: "Serif",
+          data: fontSerif,
           weight: 400,
         },
       ],

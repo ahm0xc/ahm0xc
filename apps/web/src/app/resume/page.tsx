@@ -75,7 +75,7 @@ export default function ResumePage() {
 function ResumeHeader() {
   return (
     <header className="flex flex-col gap-4">
-      <h1 className="font-pixel text-4xl md:text-5xl text-foreground">
+      <h1 className="font-serif text-4xl md:text-5xl text-foreground">
         Saif Ahmed
       </h1>
       <p className="text-xl text-muted-foreground">
@@ -100,7 +100,7 @@ function ResumeHeader() {
 function AboutSection() {
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="font-pixel text-2xl text-foreground">About</h2>
+      <h2 className="font-serif text-2xl text-foreground">About</h2>
       <div className="flex flex-col gap-4 text-foreground/80">
         <p>
           Self-taught polyglot developer with expertise spanning web, mobile,
@@ -121,7 +121,7 @@ function AboutSection() {
 function ExperienceSection({ experiences }: { experiences: Experience[] }) {
   return (
     <section className="flex flex-col gap-6">
-      <h2 className="font-pixel text-2xl text-foreground">Experience</h2>
+      <h2 className="font-serif text-2xl text-foreground">Experience</h2>
       <ExperienceTimeline experiences={experiences} />
     </section>
   );
@@ -189,7 +189,7 @@ function ExperienceTimelineItem({
 function SkillsSection() {
   return (
     <section className="flex flex-col gap-6">
-      <h2 className="font-pixel text-2xl text-foreground">Skills</h2>
+      <h2 className="font-serif text-2xl text-foreground">Skills</h2>
       <div className="flex flex-col gap-6">
         <SkillCategory
           category="Languages"
@@ -275,13 +275,13 @@ function SkillCategory({ category, skills }: SkillCategoryProps) {
 function ProjectsSection() {
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="font-pixel text-2xl text-foreground">Projects</h2>
+      <h2 className="font-serif text-2xl text-foreground">Projects</h2>
       <p className="text-foreground/80">
         I&apos;ve worked on numerous projects spanning different domains and
         technologies. Check out my{" "}
         <Link
           href="/projects"
-          className="font-pixel text-foreground hover:underline"
+          className="font-serif text-foreground hover:underline"
         >
           projects page
         </Link>{" "}
@@ -294,7 +294,7 @@ function ProjectsSection() {
 function EducationSection() {
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="font-pixel text-2xl text-foreground">Education</h2>
+      <h2 className="font-serif text-2xl text-foreground">Education</h2>
       <div className="flex flex-col gap-2">
         <h3 className="font-semibold text-foreground">Self-Taught Developer</h3>
         <p className="text-foreground/80">
@@ -315,14 +315,14 @@ function FooterNoteSection() {
           href="https://x.com/ahm0xc"
           target="_blank"
           rel="noopener noreferrer"
-          className="font-pixel text-foreground hover:underline"
+          className="font-serif text-foreground hover:underline"
         >
           Twitter/X
         </Link>{" "}
         or check out my{" "}
         <Link
           href="/writing"
-          className="font-pixel text-foreground hover:underline"
+          className="font-serif text-foreground hover:underline"
         >
           writing
         </Link>

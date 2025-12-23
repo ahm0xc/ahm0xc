@@ -27,7 +27,7 @@ export default async function WritingPage() {
   return (
     <Container className="max-w-2xl w-full pt-32">
       <div>
-        <h1 className="text-3xl font-bold font-pixel mb-2 text-foreground">
+        <h1 className="text-3xl font-bold font-serif mb-2 text-foreground">
           Writings
         </h1>
         <p className="text-sm md:text-base mb-12 text-foreground/80">

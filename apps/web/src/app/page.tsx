@@ -19,7 +19,7 @@ function IntroductionSection() {
       </div>
       <div>
         <p className="text-2xl text-muted-foreground">
-          <span className="font-pixel text-foreground text-3xl">
+          <span className="font-serif text-foreground text-3xl italic">
             Saif Ahmed.
           </span>{" "}
           Developer & Infrastructural Engineer, focused in entrepreneurship.
@@ -30,7 +30,7 @@ function IntroductionSection() {
           Hey there! I&apos;m Ahmed aka{" "}
           <Link
             href="https://x.com/ahm0xc"
-            className="font-pixel text-foreground"
+            className="font-serif text-foreground"
             target="_blank"
           >
             ahm0xc
