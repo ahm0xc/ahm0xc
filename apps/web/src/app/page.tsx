@@ -15,7 +15,7 @@ function IntroductionSection() {
   return (
     <section className="flex flex-col gap-6">
       <div>
-        <Avatar className="size-10" />
+        <Avatar className="size-20 rounded-full" />
       </div>
       <div>
         <p className="text-2xl text-muted-foreground">
