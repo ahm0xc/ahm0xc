@@ -14,6 +14,7 @@ const withBundleAnalyzer = bundleAnalyzer({
 const config = {
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   devIndicators: false,
+  transpilePackages: ["next-mdx-remote"],
   experimental: {
     optimizePackageImports: [
       "@radix-ui/react-dialog",
