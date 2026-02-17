@@ -67,7 +67,7 @@ export default function Navbar() {
 
   return (
     <nav className="absolute top-0 right-0 z-10">
-      <div className="px-2 py-2 pr-6 pt-6">
+      <div className="px-2 py-2 pt-6 pr-6">
         <div className="flex items-center justify-center gap-4">
           {navItems.map((item) => {
             return <NavbarItem key={item.title} {...item} />;
@@ -100,11 +100,11 @@ function NavbarItem({ title, href, isActive, shortcut, hidden }: NavItem) {
       <button
         type="button"
         className={cn(
-          "text-muted-foreground cursor-pointer hover:text-primary",
+          "cursor-pointer text-muted-foreground hover:text-primary",
           isActive && "text-primary"
         )}
       >
-        <span className="font-mono text-muted-foreground/80 text-sm hidden lg:inline-block">
+        <span className="hidden font-mono text-sm text-muted-foreground/80 lg:inline-block">
           [{shortcut}]
         </span>{" "}
         {title}

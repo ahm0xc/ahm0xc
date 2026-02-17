@@ -53,12 +53,12 @@ export default async function Page({
 
   return (
     <div>
-      <Container className="pt-36 max-w-3xl mx-auto">
+      <Container className="mx-auto max-w-3xl pt-36">
         <div className="flex flex-col items-center justify-center">
           <h1 className="font-serif text-5xl font-semibold">
             {frontmatter.name as string}
           </h1>
-          <p className="text-foreground/80 italic text-xl mt-2">
+          <p className="mt-2 text-xl text-foreground/80 italic">
             {frontmatter.type}, {new Date(frontmatter.dateStart).getFullYear()}
           </p>
         </div>
@@ -66,15 +66,15 @@ export default async function Page({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={frontmatter.banner}
-            className="w-full h-auto aspect-video bg-muted"
+            className="aspect-video h-auto w-full bg-muted"
             alt=""
           />
         </div>
-        <div className="mt-4 flex flex-col md:flex-row-reverse gap-8 md:gap-6">
+        <div className="mt-4 flex flex-col gap-8 md:flex-row-reverse md:gap-6">
           <div className="space-y-6 md:flex-1">
             <div>
               <p>Overview</p>
-              <div className="text-foreground/80 mt-1 text-[15px] space-y-2">
+              <div className="mt-1 space-y-2 text-[15px] text-foreground/80">
                 {frontmatter.overview.split("\\n").map((x, idx) => (
                   <p
                     key={`${frontmatter.name}-overview-block-${idx}`}
@@ -88,7 +88,7 @@ export default async function Page({
             {frontmatter.team && frontmatter.team.length > 1 && (
               <div>
                 <p>Team</p>
-                <ul className="text-foreground/80 mt-1 text-[15px]">
+                <ul className="mt-1 text-[15px] text-foreground/80">
                   {frontmatter.team?.map((team) => {
                     const link = team.includes("|") && team.split("|")[1];
                     const cleanTeamMemberName = team.includes("|")
@@ -113,7 +113,7 @@ export default async function Page({
           <div className="space-y-6 md:flex-1">
             <div>
               <p>Timeline</p>
-              <p className="text-foreground/80 mt-1 text-[15px]">
+              <p className="mt-1 text-[15px] text-foreground/80">
                 {formatDate(new Date(frontmatter.dateStart), "d MMM, yyyy")}
                 {frontmatter.dateEnd && " — "}
                 {frontmatter.dateEnd &&
@@ -122,7 +122,7 @@ export default async function Page({
             </div>
             <div>
               <p>Tools</p>
-              <ul className="text-foreground/80 mt-1 text-[15px]">
+              <ul className="mt-1 text-[15px] text-foreground/80">
                 {frontmatter.tools.map((tool) => (
                   <li key={`${frontmatter.name}-tool-${tool}`}>{tool}</li>
                 ))}
@@ -135,7 +135,7 @@ export default async function Page({
       <Container className="mt-10">
         <article
           className={cn(
-            "pt-6 prose dark:prose-invert prose-stone",
+            "prose pt-6 prose-stone dark:prose-invert",
             "prose-h2:mt-12 prose-h2:mb-2"
           )}
         >

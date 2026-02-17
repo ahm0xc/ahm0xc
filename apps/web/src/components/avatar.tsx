@@ -3,11 +3,10 @@ import Image from "next/image";
 import Me from "~/../public/avatar.webp";
 import { cn } from "~/lib/utils";
 
-export interface AvatarProps
-  extends Omit<
-    Omit<React.ComponentPropsWithoutRef<typeof Image>, "src">,
-    "alt"
-  > {
+export interface AvatarProps extends Omit<
+  Omit<React.ComponentPropsWithoutRef<typeof Image>, "src">,
+  "alt"
+> {
   className?: string;
   alt?: string;
 }

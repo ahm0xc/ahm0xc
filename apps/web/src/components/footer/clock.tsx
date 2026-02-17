@@ -42,22 +42,22 @@ const Clock: React.FC = () => {
           cx="0"
           cy="0"
           r="14"
-          className="stroke-foreground stroke-1 fill-none"
+          className="fill-none stroke-foreground stroke-1"
           id="clock-frame"
         />
         <path
           d="M 0 0 L 0 -12 Z"
-          className="fill-none stroke-[0.75px] stroke-foreground/50"
+          className="fill-none stroke-foreground/50 stroke-[0.75px]"
           id="clock-seconds-hand"
         />
         <path
           d="M 0 0 L 0 -8 Z"
-          className="fill-none stroke-1 stroke-foreground/80"
+          className="fill-none stroke-foreground/80 stroke-1"
           id="clock-minutes-hand"
         />
         <path
           d="M 0 0 L 0 -6 Z"
-          className="fill-none stroke-1 stroke-foreground"
+          className="fill-none stroke-foreground stroke-1"
           id="clock-hours-hand"
         />
       </svg>

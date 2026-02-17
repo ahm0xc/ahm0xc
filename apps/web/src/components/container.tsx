@@ -12,7 +12,7 @@ export default function Container({
   ...props
 }: ContainerProps) {
   return (
-    <div className={cn("max-w-xl mx-auto px-4", className)} {...props}>
+    <div className={cn("mx-auto max-w-xl px-4", className)} {...props}>
       {children}
     </div>
   );

@@ -20,7 +20,7 @@ export default function SnowFall() {
 
   if (resolvedTheme === "dark")
     return (
-      <div className="fixed top-0 left-0 w-full h-full pointer-events-none">
+      <div className="pointer-events-none fixed top-0 left-0 h-full w-full">
         <Suspense fallback={null}>
           <Snowfall snowflakeCount={30} speed={[1, 3]} radius={[0.5, 2.5]} />
         </Suspense>

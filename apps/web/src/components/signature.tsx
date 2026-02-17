@@ -9,7 +9,7 @@ interface SignatureProps {
 const Signature: React.FC<SignatureProps> = ({ className }) => {
   return (
     <svg
-      className={cn("aspect-604/147 w-20 h-auto", className)}
+      className={cn("aspect-604/147 h-auto w-20", className)}
       width="604"
       height="147"
       viewBox="0 0 604 147"

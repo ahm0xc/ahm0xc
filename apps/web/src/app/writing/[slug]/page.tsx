@@ -54,8 +54,8 @@ export default async function Page({
 
   return (
     <div className="lg:flex">
-      <div className="flex-1 hidden lg:block" />
-      <Container className="pt-36 max-w-xl mx-auto">
+      <div className="hidden flex-1 lg:block" />
+      <Container className="mx-auto max-w-xl pt-36">
         <div>
           <button className="mb-4">
             <Link
@@ -69,13 +69,13 @@ export default async function Page({
           <h1 className="font-serif text-5xl italic">
             {frontmatter.title as string}
           </h1>
-          <p className="text-sm text-foreground/80 mt-2">
+          <p className="mt-2 text-sm text-foreground/80">
             By <Link href="/">Ahmed</Link>
           </p>
         </div>
         <article
           className={cn(
-            "pt-6 prose dark:prose-invert prose-stone",
+            "prose pt-6 prose-stone dark:prose-invert",
             "prose-headings:font-serif",
             "prose-h2:mt-12 prose-h2:mb-2"
           )}
@@ -83,7 +83,7 @@ export default async function Page({
           {content}
         </article>
       </Container>
-      <div className="flex-1 hidden lg:flex">
+      <div className="hidden flex-1 lg:flex">
         <Aside toc={toc} />
       </div>
     </div>

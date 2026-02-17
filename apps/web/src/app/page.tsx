@@ -19,13 +19,13 @@ function IntroductionSection() {
       </div>
       <div>
         <p className="text-2xl text-muted-foreground">
-          <span className="font-serif text-foreground text-3xl italic">
+          <span className="font-serif text-3xl text-foreground italic">
             Saif Ahmed.
           </span>{" "}
           Developer & Infrastructural Engineer, focused in entrepreneurship.
         </p>
       </div>
-      <div className="mt-10 flex flex-col gap-6 w-full">
+      <div className="mt-10 flex w-full flex-col gap-6">
         <p className="text-foreground/80">
           Hey there! I&apos;m Ahmed aka{" "}
           <Link

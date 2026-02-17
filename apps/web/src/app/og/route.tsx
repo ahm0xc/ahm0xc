@@ -24,19 +24,17 @@ export async function GET(request: NextRequest) {
   );
 
   return new ImageResponse(
-    (
-      <div
-        tw="w-full h-full flex"
-        style={{
-          fontFamily: "Serif",
-          backgroundImage: `url(data:image/png;base64,${template.toString("base64")})`,
-        }}
-      >
-        <div tw="absolute bottom-0 left-0 p-16 max-w-[900px] flex">
-          <p tw="text-[80px] text-white">{title}</p>
-        </div>
+    <div
+      tw="w-full h-full flex"
+      style={{
+        fontFamily: "Serif",
+        backgroundImage: `url(data:image/png;base64,${template.toString("base64")})`,
+      }}
+    >
+      <div tw="absolute bottom-0 left-0 p-16 max-w-[900px] flex">
+        <p tw="text-[80px] text-white">{title}</p>
       </div>
-    ),
+    </div>,
     {
       ...size,
       fonts: [

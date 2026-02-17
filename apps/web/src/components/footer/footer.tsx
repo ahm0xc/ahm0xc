@@ -7,10 +7,10 @@ import Clock from "./clock";
 
 const Footer: React.FC = () => {
   return (
-    <Container className="px-0 sm:px-4 w-full pt-10">
+    <Container className="w-full px-0 pt-10 sm:px-4">
       <footer className="relative px-4 sm:px-0">
-        <div className="wavy-line opacity-50 absolute top-0 left-0 right-0 -translate-y-[50%]" />
-        <div className="flex items-center justify-between h-16">
+        <div className="wavy-line absolute top-0 right-0 left-0 -translate-y-[50%] opacity-50" />
+        <div className="flex h-16 items-center justify-between">
           <div>
             <Signature />
           </div>

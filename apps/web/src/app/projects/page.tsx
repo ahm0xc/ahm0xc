@@ -33,16 +33,16 @@ export default async function ProjectsPage() {
         <ul className="grid grid-cols-1 gap-8">
           {projects.map((project) => {
             return (
-              <li key={project.slug} className="text-base md:text-lg group">
+              <li key={project.slug} className="group text-base md:text-lg">
                 <Link href={`/projects/${project.slug}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={getMiniBanner(project.frontmatter.banner)}
-                    className="aspect-video w-full h-auto bg-muted"
+                    className="aspect-video h-auto w-full bg-muted"
                     alt=""
                   />
                   <div className="mt-3">
-                    <p className="text-2xl font-medium font-serif">
+                    <p className="font-serif text-2xl font-medium">
                       <span className="group-hover:underline">
                         {project.frontmatter.name}
                       </span>{" "}

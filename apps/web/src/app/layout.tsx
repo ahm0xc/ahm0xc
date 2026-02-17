@@ -35,7 +35,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "antialiased min-h-screen flex flex-col font-sans",
+          "flex min-h-screen flex-col font-sans antialiased",
           fontSerif.variable,
           GeistSans.variable
         )}
@@ -46,7 +46,7 @@ export default function RootLayout({
           <ThemeProvider>
             <Navbar />
             <SnowFall />
-            <main className="flex-1 w-full">{children}</main>
+            <main className="w-full flex-1">{children}</main>
             <Footer />
           </ThemeProvider>
         </TRPCReactProvider>

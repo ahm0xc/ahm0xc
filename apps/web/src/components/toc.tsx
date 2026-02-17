@@ -20,7 +20,7 @@ export function Toc({ items, className }: TocProps) {
       className={cn("max-h-[calc(100vh-8rem)] overflow-y-auto", className)}
       aria-label="Table of contents"
     >
-      <h2 className="text-sm font-semibold text-foreground/70 mb-3">
+      <h2 className="mb-3 text-sm font-semibold text-foreground/70">
         On this page
       </h2>
       <ul className="space-y-2 text-sm">
@@ -29,7 +29,7 @@ export function Toc({ items, className }: TocProps) {
             <Link
               href={`#${item.id}`}
               className={cn(
-                "block text-foreground/60 hover:text-foreground transition-colors",
+                "block text-foreground/60 transition-colors hover:text-foreground",
                 "hover:underline",
                 item.depth === 2 && "font-medium",
                 item.depth === 3 && "pl-4 text-foreground/50",

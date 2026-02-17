@@ -25,23 +25,23 @@ export default async function WritingPage() {
   const writings = await getAllWritings({ includeDraft: draft.isEnabled });
 
   return (
-    <Container className="max-w-2xl w-full pt-32">
+    <Container className="w-full max-w-2xl pt-32">
       <div>
-        <h1 className="text-3xl font-bold font-serif mb-2 text-foreground">
+        <h1 className="mb-2 font-serif text-3xl font-bold text-foreground">
           Writings
         </h1>
-        <p className="text-sm md:text-base mb-12 text-foreground/80">
+        <p className="mb-12 text-sm text-foreground/80 md:text-base">
           By <Link href="/">Ahmed</Link>
         </p>
         <p className="mb-4 text-foreground/80">
           Here&apos;s a list of my writing:
         </p>
-        <ul className="list-disc list-inside space-y-2 text-foreground/90">
+        <ul className="list-inside list-disc space-y-2 text-foreground/90">
           {writings.map((writing) => (
             <li key={writing.slug} className="text-base md:text-lg">
               <Link
                 href={`/writing/${writing.slug}`}
-                className="underline hover:opacity-80 transition-opacity"
+                className="underline transition-opacity hover:opacity-80"
               >
                 {writing.frontmatter.title as string}
               </Link>

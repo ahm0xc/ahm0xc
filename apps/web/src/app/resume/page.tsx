@@ -75,7 +75,7 @@ export default function ResumePage() {
 function ResumeHeader() {
   return (
     <header className="flex flex-col gap-4">
-      <h1 className="font-serif text-4xl md:text-5xl text-foreground">
+      <h1 className="font-serif text-4xl text-foreground md:text-5xl">
         Saif Ahmed
       </h1>
       <p className="text-xl text-muted-foreground">
@@ -86,7 +86,7 @@ function ResumeHeader() {
           href="https://x.com/ahm0xc"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-foreground transition-colors"
+          className="transition-colors hover:text-foreground"
         >
           @ahm0xc
         </Link>
@@ -154,16 +154,16 @@ function ExperienceTimelineItem({
     <li className={cn("relative flex gap-4 pb-10", isLast && "pb-0")}>
       <div
         className={cn(
-          "absolute left-4 top-0 bottom-0 w-1 -translate-x-1/2 bg-linear-to-b from-muted to-muted z-0",
+          "absolute top-0 bottom-0 left-4 z-0 w-1 -translate-x-1/2 bg-linear-to-b from-muted to-muted",
           isLast && "to-transparent"
         )}
       />
-      <div className="flex min-w-8 h-8 items-center justify-center overflow-hidden rounded-full bg-muted z-1">
+      <div className="z-1 flex h-8 min-w-8 items-center justify-center overflow-hidden rounded-full bg-muted">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={exp.logoUrl}
           alt={exp.companyName}
-          className="w-full h-full object-contain dark:invert p-1.5"
+          className="h-full w-full object-contain p-1.5 dark:invert"
         />
       </div>
       <div className="flex flex-col gap-2">
@@ -172,7 +172,7 @@ function ExperienceTimelineItem({
             href={exp.companyUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-foreground hover:underline font-medium"
+            className="font-medium text-foreground hover:underline"
           >
             {exp.companyName}
           </Link>
@@ -262,7 +262,7 @@ function SkillCategory({ category, skills }: SkillCategoryProps) {
         {skills.map((skill) => (
           <span
             key={skill}
-            className="px-3 py-1 bg-muted text-foreground text-sm rounded-md"
+            className="rounded-md bg-muted px-3 py-1 text-sm text-foreground"
           >
             {skill}
           </span>
@@ -308,7 +308,7 @@ function EducationSection() {
 
 function FooterNoteSection() {
   return (
-    <section className="pt-8 border-t border-border">
+    <section className="border-t border-border pt-8">
       <p className="text-sm text-muted-foreground">
         Want to get in touch? Find me on{" "}
         <Link
