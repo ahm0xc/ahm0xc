@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "incremental": true,
+    "noUncheckedSideEffectImports": false,
     "target": "es2022",
     "jsx": "react-jsx",
     /* Bundled projects */
