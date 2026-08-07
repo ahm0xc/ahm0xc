@@ -7,7 +7,6 @@ import { GeistSans } from "geist/font/sans";
 
 import { Footer } from "~/components/footer";
 import { Navbar } from "~/components/navbar";
-import SnowFall from "~/components/snow-fall";
 import { ThemeProvider } from "~/components/theme-provider";
 import { cn, getBaseUrl } from "~/lib/utils";
 import "~/styles/globals.css";
@@ -45,7 +44,6 @@ export default function RootLayout({
         <TRPCReactProvider>
           <ThemeProvider>
             <Navbar />
-            <SnowFall />
             <main className="w-full flex-1">{children}</main>
             <Footer />
           </ThemeProvider>

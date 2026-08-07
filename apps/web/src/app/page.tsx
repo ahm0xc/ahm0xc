@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import Avatar from "~/components/avatar";
 import Container from "~/components/container";
 
 export default function HomePage() {
@@ -14,9 +13,6 @@ export default function HomePage() {
 function IntroductionSection() {
   return (
     <section className="flex flex-col gap-6">
-      <div>
-        <Avatar className="size-20 rounded-full" />
-      </div>
       <div>
         <p className="text-2xl text-muted-foreground">
           <span className="font-serif text-3xl text-foreground italic">

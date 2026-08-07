@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import Me from "~/../public/avatar.webp";
+import Me from "~/../public/avatar.png";
 import { cn } from "~/lib/utils";
 
 export interface AvatarProps extends Omit<

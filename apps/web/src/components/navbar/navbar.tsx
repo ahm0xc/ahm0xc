@@ -8,9 +8,10 @@ import { useTheme } from "next-themes";
 import { useHotkeys } from "~/hooks/use-hotkey/use-hotkey";
 import useMounted from "~/hooks/use-mounted";
 import { cn } from "~/lib/utils";
-import { useSnowfallStore } from "~/store/snowfall-store";
 
+import Container from "../container";
 import { Icons } from "../icons";
+import Logo from "../logo";
 
 interface NavItem {
   title: string;
@@ -25,8 +26,6 @@ export default function Navbar() {
   const { resolvedTheme, setTheme } = useTheme();
   const mounted = useMounted();
   const router = useRouter();
-  const { isEnabled: isSnowfallEnabled, toggle: toggleSnowfall } =
-    useSnowfallStore();
 
   useHotkeys([
     ["h", () => router.push("/")],
@@ -56,39 +55,32 @@ export default function Navbar() {
     },
   ];
 
-  function handleToggleSnowfall() {
-    if (resolvedTheme === "light") return;
-    toggleSnowfall();
-  }
-
   function toggleTheme() {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   }
 
   return (
-    <nav className="absolute top-0 right-0 z-10">
-      <div className="px-2 py-2 pt-6 pr-6">
-        <div className="flex items-center justify-center gap-4">
-          {navItems.map((item) => {
-            return <NavbarItem key={item.title} {...item} />;
-          })}
-          <button onClick={handleToggleSnowfall} title="Toggle Snowfall">
-            <Icons.snow
-              className={cn(
-                "text-muted-foreground",
-                !isSnowfallEnabled && "text-destructive-foreground"
+    <nav className="absolute top-0 right-0 left-0 z-10">
+      <Container className="flex w-full items-center justify-between py-2 pt-6">
+        <Link href="/">
+          <Logo className="size-6 text-foreground" />
+        </Link>
+
+        <div className="">
+          <div className="flex items-center justify-center gap-4">
+            {navItems.map((item) => {
+              return <NavbarItem key={item.title} {...item} />;
+            })}
+            <button onClick={toggleTheme} title="Toggle theme">
+              {mounted && resolvedTheme === "dark" ? (
+                <Icons.sun className="text-muted-foreground" />
+              ) : (
+                <Icons.moon className="text-muted-foreground" />
               )}
-            />
-          </button>
-          <button onClick={toggleTheme} title="Toggle theme">
-            {mounted && resolvedTheme === "dark" ? (
-              <Icons.sun className="text-muted-foreground" />
-            ) : (
-              <Icons.moon className="text-muted-foreground" />
-            )}
-          </button>
+            </button>
+          </div>
         </div>
-      </div>
+      </Container>
     </nav>
   );
 }
