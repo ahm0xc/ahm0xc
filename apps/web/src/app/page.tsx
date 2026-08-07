@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import Container from "~/components/container";
+import Signature from "~/components/signature";
 
 export default function HomePage() {
   return (
@@ -15,10 +16,8 @@ function IntroductionSection() {
     <section className="flex flex-col gap-6">
       <div>
         <p className="text-2xl text-muted-foreground">
-          <span className="font-serif text-3xl text-foreground italic">
-            Saif Ahmed.
-          </span>{" "}
-          Developer & Infrastructural Engineer, focused in entrepreneurship.
+          <Signature className="inline h-7 text-foreground" /> Developer &
+          Infrastructural Engineer, focused in entrepreneurship.
         </p>
       </div>
       <div className="mt-10 flex w-full flex-col gap-6">
