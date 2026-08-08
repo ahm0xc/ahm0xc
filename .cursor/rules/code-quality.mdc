@@ -1,9 +1,0 @@
----
-alwaysApply: true
----
-
-- Never use comments on anything.
-- Use refs instead of states where possible.
-- Only comments in code where some implementation isn't done in a straight way so that devs know what that is and what that is doing.
-- always use functions over classes.
-- file names should always be kebab case
