@@ -27,7 +27,7 @@ export default async function WritingPage() {
   return (
     <Container className="w-full max-w-2xl pt-32">
       <div>
-        <h1 className="mb-2 font-serif text-3xl font-bold text-foreground">
+        <h1 className="mb-2 font-heading text-3xl font-bold text-foreground">
           Writings
         </h1>
         <p className="mb-12 text-sm text-foreground/80 md:text-base">
@@ -41,7 +41,7 @@ export default async function WritingPage() {
             <li key={writing.slug} className="text-base md:text-lg">
               <Link
                 href={`/writing/${writing.slug}`}
-                className="underline transition-opacity hover:opacity-80"
+                className="transition-opacity hover:underline hover:underline-offset-2 hover:opacity-80"
               >
                 {writing.frontmatter.title as string}
               </Link>

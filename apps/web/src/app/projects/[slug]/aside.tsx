@@ -3,7 +3,7 @@ import { TocItem } from "~/lib/toc-utils";
 
 export default function Aside({ toc }: { toc: TocItem[] }) {
   return (
-    <aside className="max-w-[350px] pt-72 lg:pl-8">
+    <aside className="max-w-87.5 pt-72 lg:pl-8">
       <div className="sticky top-10">
         <Toc items={toc} />
       </div>

@@ -42,14 +42,14 @@ export default async function ProjectsPage() {
                     alt=""
                   />
                   <div className="mt-3">
-                    <p className="font-serif text-2xl font-medium">
+                    <p className="font-heading text-2xl font-medium">
                       <span className="group-hover:underline">
                         {project.frontmatter.name}
                       </span>{" "}
                       {" — "}
                       {new Date(project.frontmatter.dateStart).getFullYear()}
                     </p>
-                    <p className="text-base text-foreground/80">
+                    <p className="text-sm text-foreground/80">
                       {project.frontmatter.shortDescription}
                     </p>
                   </div>

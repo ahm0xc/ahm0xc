@@ -55,7 +55,7 @@ export default async function Page({
     <div>
       <Container className="mx-auto max-w-3xl pt-36">
         <div className="flex flex-col items-center justify-center">
-          <h1 className="font-serif text-5xl font-semibold">
+          <h1 className="font-heading text-5xl font-semibold">
             {frontmatter.name as string}
           </h1>
           <p className="mt-2 text-xl text-foreground/80 italic">

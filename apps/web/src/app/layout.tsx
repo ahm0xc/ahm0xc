@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Newsreader } from "next/font/google";
+import { Bebas_Neue } from "next/font/google";
 
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -12,12 +12,12 @@ import { cn, getBaseUrl } from "~/lib/utils";
 import "~/styles/globals.css";
 import { TRPCReactProvider } from "~/trpc/react";
 
-const fontSerif = Newsreader({
+const fontHeading = Bebas_Neue({
   subsets: ["latin"],
-  variable: "--font-serif",
+  variable: "--font-heading",
   display: "swap",
   preload: false,
-  weight: ["400", "600"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -35,7 +35,7 @@ export default function RootLayout({
       <body
         className={cn(
           "flex min-h-screen flex-col font-sans antialiased",
-          fontSerif.variable,
+          fontHeading.variable,
           GeistSans.variable
         )}
       >

@@ -25,7 +25,7 @@ function IntroductionSection() {
           Hey there! I&apos;m Ahmed aka{" "}
           <Link
             href="https://x.com/ahm0xc"
-            className="font-serif text-foreground"
+            className="font-semibold text-foreground"
             target="_blank"
           >
             ahm0xc
