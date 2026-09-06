@@ -151,6 +151,7 @@ async function ProjectsSection() {
 
             <Link
               href={`/projects/${p.slug}`}
+              prefetch={true}
               className="mt-1 text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
             >
               view →
