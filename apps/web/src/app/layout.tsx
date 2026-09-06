@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bebas_Neue } from "next/font/google";
+import { Bricolage_Grotesque } from "next/font/google";
 
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -12,12 +12,11 @@ import { cn, getBaseUrl } from "~/lib/utils";
 import "~/styles/globals.css";
 import { TRPCReactProvider } from "~/trpc/react";
 
-const fontHeading = Bebas_Neue({
+const fontHeading = Bricolage_Grotesque({
   subsets: ["latin"],
   variable: "--font-heading",
   display: "swap",
   preload: false,
-  weight: "400",
 });
 
 export const metadata: Metadata = {

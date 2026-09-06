@@ -41,12 +41,12 @@ export default function Navbar() {
       shortcut: "h",
       hidden: pathname === "/",
     },
-    {
-      title: "projects",
-      href: "/projects",
-      isActive: pathname === "/projects",
-      shortcut: "p",
-    },
+    // {
+    //   title: "projects",
+    //   href: "/projects",
+    //   isActive: pathname === "/projects",
+    //   shortcut: "p",
+    // },
     {
       title: "writing",
       href: "/writing",

@@ -25,7 +25,7 @@ export default async function WritingPage() {
   const writings = await getAllWritings({ includeDraft: draft.isEnabled });
 
   return (
-    <Container className="w-full max-w-2xl pt-32">
+    <Container className="w-full pt-32 md:pt-48">
       <div>
         <h1 className="mb-2 font-heading text-3xl font-bold text-foreground">
           Writings
