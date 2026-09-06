@@ -3,6 +3,8 @@ import Link from "next/link";
 import Container from "~/components/container";
 import { getAllProjects } from "~/lib/content";
 
+export const dynamic = "force-static";
+
 export default function HomePage() {
   return (
     <Container className="pt-32 md:pt-48">
