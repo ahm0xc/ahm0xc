@@ -1,0 +1,108 @@
+---
+title: Should Your Database Be Your Queue?
+date: 2026-09-07
+categories:
+  - database
+  - backend
+---
+
+There are two kinds of backend engineers: the ones who reach for Kafka, and the ones who reach for `SELECT ... FOR UPDATE SKIP LOCKED`.
+
+Somewhere in the middle of that divide sits **pgmq**, a lightweight Postgres extension that turns your existing database into something that looks and quacks like AWS SQS. No broker to run. No new service to monitor at 3 a.m. Just tables, indexes, and SQL functions, sitting quietly inside the database you already have.
+
+It sounds almost too convenient. And that convenience is exactly what makes it controversial.
+
+## The pitch, in one query
+
+Here's the entire mental model of pgmq, compressed into a REPL session:
+
+```sql
+-- create a queue (this just creates a table under the hood)
+select pgmq.create('email_jobs');
+
+-- enqueue a message
+select pgmq.send('email_jobs', '{"to": "user@example.com", "template": "welcome"}');
+
+-- a worker reads it, invisible to others for 30 seconds
+select * from pgmq.read('email_jobs', vt => 30, qty => 1);
+
+-- worker finishes, deletes the message
+select pgmq.delete('email_jobs', msg_id => 1);
+```
+
+That's it. That's the whole pitch. There is no cluster. There is no ZooKeeper, no partition rebalancing, no separate SDK to version alongside your app. The "queue" is a Postgres table named something like `pgmq.q_email_jobs`, and you can `SELECT * FROM` it like any other table when you're debugging at 2 a.m. and need to know exactly what's stuck and why.
+
+Supabase liked this enough to build its own Queues feature directly on top of pgmq, which moved it from "clever side project" to "thing real production systems run."
+
+## The nerdy bit: how it actually works
+
+Under the hood, `pgmq.read()` is roughly this:
+
+```sql
+UPDATE pgmq.q_email_jobs
+SET vt = now() + interval '30 seconds', read_ct = read_ct + 1
+WHERE msg_id = (
+  SELECT msg_id
+  FROM pgmq.q_email_jobs
+  WHERE vt <= now()
+  ORDER BY msg_id
+  FOR UPDATE SKIP LOCKED
+  LIMIT 1
+)
+RETURNING *;
+```
+
+`FOR UPDATE SKIP LOCKED` is the whole trick. Without it, ten workers racing to grab the next job would queue up behind each other's row locks, worker #2 blocks until worker #1's transaction commits, even though #1 already claimed a _different_ row. `SKIP LOCKED` tells Postgres: "if a row's already locked, don't wait, just skip it and grab the next available one." That's what makes concurrent, contention-free polling on a plain table possible at all. It's an elegant repurposing of a locking primitive Postgres added back in 9.5, originally to enable exactly this kind of job-queue pattern.
+
+But elegant tricks have costs. Every `UPDATE` and `DELETE` on that table leaves a dead tuple behind, Postgres's MVCC model never overwrites a row in place, it just marks the old version dead and writes a new one. A queue processing 500 messages/second is generating 500 dead tuples/second, every second, forever. Autovacuum eventually reclaims that space, but under sustained load it can fall behind, and a bloated table starts costing you both disk and query-planner accuracy. This is the unglamorous, unsexy reason DBAs get twitchy about high-churn tables, and a queue is, almost by definition, the highest-churn table in your schema.
+
+## The case for it
+
+The strongest argument for pgmq isn't about performance at all, it's about the tax you _don't_ pay. Every new piece of infrastructure costs you something even before it fails: time to evaluate it, learn its failure modes, write runbooks for it, and get the whole team fluent enough to debug it under pressure. A message broker isn't a library import. It's a new distributed system, with its own uptime SLA, sitting on your critical path.
+
+If you're already running Postgres, pgmq costs you almost nothing on top of that. And you get one real superpower for free: **transactional queueing.** This works, atomically, as a single commit:
+
+```sql
+BEGIN;
+  UPDATE orders SET status = 'paid' WHERE id = 42;
+  SELECT pgmq.send('fulfillment_jobs', json_build_object('order_id', 42)::text);
+COMMIT;
+```
+
+If the transaction rolls back, the order update _and_ the job disappear together, no job ever gets enqueued for an order that didn't actually get marked paid. Try building that same guarantee across a Postgres write and a separate Kafka produce call, and you're suddenly in outbox-pattern territory, wiring up a second table just to make the two systems agree with each other eventually. pgmq sidesteps the whole problem, because there's only ever one system of record to begin with.
+
+## The case against it
+
+The counter-argument is exactly as old as relational databases themselves: they're optimized for transactional consistency on a working set, not for high-throughput, low-latency fan-out. A few frictions show up reliably once you push past toy scale:
+
+- **Polling, not pushing.** Consumers ask "anything for me?" on a loop rather than being woken the instant a message lands. Fine at hundreds of messages a second. Increasingly wasteful, CPU spent polling empty queues, added latency between "message sent" and "worker picks it up", as volume climbs toward what Kafka was actually built for.
+- **Vacuum pressure**, as above, a hot queue is a bloat generator, and bloat degrades your _entire_ database, not just the queue table.
+- **Shared blast radius.** Your queue now competes with checkout, auth, and everything else for the same connection pool, the same buffer cache, the same WAL throughput. A queue that gets noisy can slow down unrelated queries. A broker outage takes down your job processing; a _database_ outage takes down the whole product.
+
+None of these are pgmq bugs. They're the fine print on the trade you're making, and how much that fine print matters depends entirely on your scale.
+
+## The bigger argument pgmq is a proxy for
+
+Here's what makes this genuinely interesting rather than just a spec-sheet comparison: nobody actually argues about pgmq's code. They argue about what it represents.
+
+There's a real, ongoing movement, call it the **"Postgres for Everything"** school, steadily annexing territory that used to require specialized tools: full-text search (`tsvector` instead of Elasticsearch), time-series data (TimescaleDB), vector search (`pgvector` instead of Pinecone), and now queues. The logic is consistent: consolidation reduces the number of systems that can page you at 3 a.m., and modern Postgres is far more capable than the "it's just a relational database" reputation it inherited from decades ago.
+
+The **"right tool for the job"** school sees the same trend as slow-motion technical debt, every workload you bolt onto Postgres is another tenant competing for the same lock manager, the same disk, the same DBA's attention. Today it's fine. In eighteen months, when the "small internal job queue" is doing ten times the volume anyone planned for, you're doing emergency surgery on your primary database instead of just scaling a queue horizontally.
+
+pgmq is simply where that argument currently has its most concrete, most-forked-on-GitHub battlefield. One level below _that_ fight is an even nerdier one that only backend Twitter cares about: pgmq vs. `pg-boss` vs. `river` vs. `graphile-worker`, four different opinions on FIFO ordering, visibility timeouts, and which language's ecosystem gets first-class bindings. That one is usually settled less by benchmark and more by "what does our hosting provider ship by default."
+
+## So, should your database be your queue?
+
+**Probably, if:**
+
+- You already use Postgres and message volume is moderate
+- You want atomic writes between your data and your queue (no outbox pattern needed)
+- You don't want to run and monitor a separate message broker
+
+**Probably not, if:**
+
+- You need push-based delivery with very low latency at high scale
+- Your queue traffic could slow down your main database
+- You expect message volume to grow significantly soon
+
+The honest answer is that pgmq isn't wrong, and neither are its critics. It's a bet that operational simplicity today outweighs the headroom you might need tomorrow, and like most bets framed that way, the people who've been burned by premature complexity and the people who've been burned by premature simplicity are going to keep disagreeing about it forever.

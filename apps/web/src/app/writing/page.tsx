@@ -41,6 +41,7 @@ export default async function WritingPage() {
             <li key={writing.slug} className="text-base md:text-lg">
               <Link
                 href={`/writing/${writing.slug}`}
+                prefetch={true}
                 className="transition-opacity hover:underline hover:underline-offset-2 hover:opacity-80"
               >
                 {writing.frontmatter.title as string}
