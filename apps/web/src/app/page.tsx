@@ -28,9 +28,15 @@ function IntroductionSection() {
           <span className="font-semibold text-foreground hover:underline hover:underline-offset-2">
             ahm0xc
           </span>
-          , a self-taught polyglot developer. I've been a web programmer since
-          2021. This taught me some powerful lessons on what it takes to build
-          scalable software. It's a lot more than JQuery and a dream.
+          , Self-taught polyglot developer with expertise spanning web, mobile,
+          desktop, and CLI applications. Experienced in building scalable
+          infrastructure and architecting full-stack solutions from the ground
+          up.
+          <br />
+          <br />
+          Passionate about entrepreneurship and creating products that is fast
+          and scalable. I have been coding since 2020, which has taught me
+          invaluable lessons about building robust, scalable software.
         </p>
       </div>
 
