@@ -29,7 +29,7 @@ export default function Navbar() {
 
   useHotkeys([
     ["h", () => router.push("/")],
-    ["p", () => router.push("/projects")],
+    ["a", () => router.push("/apps")],
     ["w", () => router.push("/writing")],
   ]);
 
@@ -41,12 +41,12 @@ export default function Navbar() {
       shortcut: "h",
       hidden: pathname === "/",
     },
-    // {
-    //   title: "projects",
-    //   href: "/projects",
-    //   isActive: pathname === "/projects",
-    //   shortcut: "p",
-    // },
+    {
+      title: "Apps",
+      href: "/apps",
+      isActive: pathname === "/apps",
+      shortcut: "a",
+    },
     {
       title: "writing",
       href: "/writing",

@@ -8,6 +8,7 @@ import { GeistSans } from "geist/font/sans";
 import { Footer } from "~/components/footer";
 import { Navbar } from "~/components/navbar";
 import { ThemeProvider } from "~/components/theme-provider";
+import { TooltipProvider } from "~/components/ui/tooltip";
 import { cn, getBaseUrl } from "~/lib/utils";
 import "~/styles/globals.css";
 import { TRPCReactProvider } from "~/trpc/react";
@@ -42,9 +43,11 @@ export default function RootLayout({
         <SpeedInsights />
         <TRPCReactProvider>
           <ThemeProvider>
-            <Navbar />
-            <main className="w-full flex-1">{children}</main>
-            <Footer />
+            <TooltipProvider>
+              <Navbar />
+              <main className="w-full flex-1">{children}</main>
+              <Footer />
+            </TooltipProvider>
           </ThemeProvider>
         </TRPCReactProvider>
       </body>
