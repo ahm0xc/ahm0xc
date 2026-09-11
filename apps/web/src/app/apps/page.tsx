@@ -60,7 +60,7 @@ export default function AppsPage() {
   return (
     <Container className="pt-32 md:pt-48">
       <div>
-        <h1 className="font-heading text-3xl font-bold">Apps</h1>
+        <h1 className="font-heading text-3xl font-bold">Wall of Apps</h1>
         <p className="mt-2 text-base text-pretty text-muted-foreground">
           These are a collection of softwares that I built for me or as a part
           of my entrepreneurship.
