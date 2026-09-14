@@ -116,7 +116,7 @@ function WorkSection() {
       <div className="mt-6 flex flex-col gap-6">
         {works.map((work) => (
           <div key={`${work.title}-${work.company}`}>
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex flex-col-reverse justify-between gap-2 sm:flex-row sm:items-center">
               <h3 className="text-[15px]">
                 {work.title}, {work.company}
               </h3>
