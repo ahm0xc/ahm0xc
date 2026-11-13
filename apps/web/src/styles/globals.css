@@ -181,3 +181,162 @@
 pre:has(> code) {
   @apply rounded-2xl border bg-neutral-100! dark:bg-neutral-900!;
 }
+
+.boat-scene {
+  position: relative;
+  height: 7rem;
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-family: var(--font-geist-mono, monospace);
+  font-size: clamp(0.48rem, 0.9vw, 0.6rem);
+  line-height: 0.9;
+}
+
+.boat-art,
+.boat-wake,
+.boat-water {
+  position: absolute;
+  margin: 0;
+  border: 0;
+  background: none;
+  padding: 0;
+  white-space: pre;
+}
+
+.boat-art {
+  top: 0.15rem;
+  left: -11rem;
+  color: var(--foreground);
+  animation: boat-launch 22s linear infinite;
+  filter: drop-shadow(0 0.25rem 0 color-mix(in oklch, var(--muted-foreground) 20%, transparent));
+}
+
+.boat-art-small {
+  color: var(--muted-foreground);
+  filter: none;
+  opacity: 0.7;
+}
+
+.boat-art-small-one {
+  top: 2.95rem;
+  left: -5rem;
+  animation: small-boat-one 29s linear infinite;
+}
+
+.boat-art-small-two {
+  top: 3.15rem;
+  left: -8rem;
+  opacity: 0.5;
+  animation: small-boat-two 37s linear infinite;
+}
+
+.boat-wake {
+  top: 5.35rem;
+  left: -2rem;
+  opacity: 0.75;
+  animation: ocean-drift 8s linear infinite;
+}
+
+.boat-water {
+  left: -8rem;
+  opacity: 0.55;
+}
+
+.boat-water-back {
+  top: 5.8rem;
+  animation: ocean-drift 16s linear infinite reverse;
+}
+
+.boat-water-middle {
+  top: 6.1rem;
+  opacity: 0.65;
+  animation: ocean-drift 13s linear infinite;
+}
+
+.boat-water-front {
+  top: 6.4rem;
+  opacity: 0.75;
+  animation: ocean-drift 11s linear infinite;
+}
+
+@keyframes boat-launch {
+  0% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+  12% {
+    transform: translateX(12vw) translateY(-0.25rem) rotate(-1deg);
+  }
+  30% {
+    transform: translateX(30vw) translateY(0.15rem) rotate(0.7deg);
+  }
+  52% {
+    transform: translateX(52vw) translateY(-0.2rem) rotate(-0.8deg);
+  }
+  74% {
+    transform: translateX(74vw) translateY(0.2rem) rotate(0.8deg);
+  }
+  100% {
+    transform: translateX(calc(100vw + 15rem)) translateY(-0.1rem) rotate(-0.4deg);
+  }
+}
+
+@keyframes ocean-drift {
+  to {
+    transform: translateX(-12rem);
+  }
+}
+
+@keyframes small-boat-one {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(26vw) translateY(-0.12rem);
+  }
+  50% {
+    transform: translateX(53vw) translateY(0.1rem);
+  }
+  75% {
+    transform: translateX(79vw) translateY(-0.08rem);
+  }
+  100% {
+    transform: translateX(calc(100vw + 8rem)) translateY(0);
+  }
+}
+
+@keyframes small-boat-two {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(26vw) translateY(0.08rem);
+  }
+  50% {
+    transform: translateX(53vw) translateY(-0.1rem);
+  }
+  75% {
+    transform: translateX(79vw) translateY(0.08rem);
+  }
+  100% {
+    transform: translateX(calc(100vw + 10rem)) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boat-art,
+  .boat-wake,
+  .boat-water {
+    animation: none;
+  }
+
+  .boat-art {
+    left: 50%;
+    top: 0.25rem;
+    transform: translateX(-50%);
+  }
+
+  .boat-wake,
+  .boat-water {
+    left: 0;
+  }
+}
