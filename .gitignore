@@ -1,4 +1,5 @@
-# dependencies (bun install)
+.serena
+# dependencies (pnpm install)
 node_modules
 
 # turbo

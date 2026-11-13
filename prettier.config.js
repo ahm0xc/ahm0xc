@@ -11,7 +11,7 @@ const config = {
   tailwindStylesheet: "./apps/web/src/styles/globals.css",
   tailwindFunctions: ["clsx", "cn"],
   importOrder: [
-    "^(bun:(.*)$)|^(bun$)",
+    "^(pnpm:(.*)$)|^(pnpm$)",
     "^(node:(.*)$)|^(node$)",
     "^(react/(.*)$)|^(react$)",
     "^(next/(.*)$)|^(next$)",

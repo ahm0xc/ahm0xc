@@ -2,15 +2,11 @@
   "name": "ahm0xc",
   "version": "0.0.1",
   "type": "module",
-  "packageManager": "bun@1.3.0",
-  "workspaces": [
-    "packages/*",
-    "apps/*"
-  ],
+  "packageManager": "pnpm@10.0.0",
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
-    "check": "npm run check-types && npm run fmt:check",
+    "check": "pnpm run check-types && pnpm run fmt:check",
     "check-types": "turbo check-types",
     "fmt": "prettier --write \"apps/**/*.{ts,tsx,js,jsx,mdx}\" \"packages/**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "fmt:check": "prettier --check \"apps/**/*.{ts,tsx,js,jsx,mdx}\" \"packages/**/*.{ts,tsx,js,jsx,mdx}\" --cache",

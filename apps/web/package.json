@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "npx next dev -H 0.0.0.0 -p 3000 --webpack",
+    "dev": "pnpm exec next dev -H 0.0.0.0 -p 3000 --webpack",
     "preview": "next build && next start",
     "start": "next start",
     "check-types": "tsc --noEmit",
