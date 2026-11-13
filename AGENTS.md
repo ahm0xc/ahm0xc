@@ -15,3 +15,4 @@ Personal site monorepo: Next.js app in `apps/web`, shared packages in `packages/
 - Use existing patterns in surrounding code before introducing new abstractions
 - Keep changes focused; avoid unrelated edits
 - Do not create git commits unless explicitly asked
+- after changes always check for type errors (pnpm run chekc-types) and formatting errors/warnings (pnpm run fmt:check). if you find a type error then fix it, and if you find a formatting error then run (pnpm run fmt) to fix the formatting.
