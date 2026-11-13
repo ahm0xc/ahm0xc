@@ -17,6 +17,18 @@ interface App {
 
 const apps: App[] = [
   {
+    name: "Tahleel",
+    imageUrl: "/assets/apps/tahleel.png",
+    description: "A Quran reading app",
+    link: "https://tahleel.ahm0xc.me/",
+  },
+  {
+    name: "Kabo AI",
+    imageUrl: "/assets/apps/kaboai.png",
+    description: "AI Powered Food Scanner and Health Buddy",
+    link: "https://kaboai.somossa.org",
+  },
+  {
     name: "Kagoj",
     imageUrl: "/assets/apps/kagoj.webp",
     description: "A minimal focus oriented ebook reader",
@@ -52,6 +64,12 @@ const apps: App[] = [
     imageUrl: "/assets/apps/pygmalion.webp",
     description:
       "An AI Agent that can build minecraft builds and export as schematics.",
+    status: "dropped",
+  },
+  {
+    name: "Dumscroll",
+    imageUrl: "/assets/apps/dumscroll.png",
+    description: "An iOS app that prevents you from doomscrolling.",
     status: "dropped",
   },
 ];
