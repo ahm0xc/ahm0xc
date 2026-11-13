@@ -1,7 +1,8 @@
 import Image from "next/image";
 
-import Me from "~/../public/avatar.png";
 import { cn } from "~/lib/utils";
+
+import Me from "../../public/avatar.png";
 
 export interface AvatarProps extends Omit<
   Omit<React.ComponentPropsWithoutRef<typeof Image>, "src">,
