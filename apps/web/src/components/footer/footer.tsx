@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import Link from "next/link";
 
 import Container from "~/components/container";
@@ -31,10 +32,18 @@ const Footer: React.FC = () => {
     |:\
  __|::\__
  \##o###/`}</pre>
-          <pre className="boat-wake">{"~~~~~ ~~~~~~ ~~~~~ ~~~~~~ ~~~~~ ~~~~~~ ".repeat(12)}</pre>
-          <pre className="boat-water boat-water-back">{"~~~~~ ~~~~~~~~ ~~~~~ ~~~~~~~~ ~~~~~~ ~~~~~~~~ ".repeat(12)}</pre>
-          <pre className="boat-water boat-water-middle">{"~~ ~~~~~~~~ ~~~~~ ~~ ~~~~~~~~ ~~~~~ ~~ ~~~~~~~~ ".repeat(12)}</pre>
-          <pre className="boat-water boat-water-front">{"~~~~~~~ ~~ ~~~~~~~~ ~~~~~~~ ~~ ~~~~~~~~ ~~~~~~~ ".repeat(12)}</pre>
+          <pre className="boat-wake">
+            {"~~~~~ ~~~~~~ ~~~~~ ~~~~~~ ~~~~~ ~~~~~~ ".repeat(12)}
+          </pre>
+          <pre className="boat-water boat-water-back">
+            {"~~~~~ ~~~~~~~~ ~~~~~ ~~~~~~~~ ~~~~~~ ~~~~~~~~ ".repeat(12)}
+          </pre>
+          <pre className="boat-water boat-water-middle">
+            {"~~ ~~~~~~~~ ~~~~~ ~~ ~~~~~~~~ ~~~~~ ~~ ~~~~~~~~ ".repeat(12)}
+          </pre>
+          <pre className="boat-water boat-water-front">
+            {"~~~~~~~ ~~ ~~~~~~~~ ~~~~~~~ ~~ ~~~~~~~~ ~~~~~~~ ".repeat(12)}
+          </pre>
         </div>
         <div className="flex h-16 items-center justify-between">
           <div>
