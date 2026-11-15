@@ -1,7 +1,7 @@
 import { Metadata } from "next";
-import Link from "next/link";
 
 import Container from "~/components/container";
+import { ForesightLink } from "~/components/foresight-link";
 import { getAllProjects } from "~/lib/content";
 
 export const metadata: Metadata = {
@@ -34,7 +34,7 @@ export default async function ProjectsPage() {
           {projects.map((project) => {
             return (
               <li key={project.slug} className="group text-base md:text-lg">
-                <Link href={`/projects/${project.slug}`}>
+                <ForesightLink href={`/projects/${project.slug}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={getMiniBanner(project.frontmatter.banner)}
@@ -53,7 +53,7 @@ export default async function ProjectsPage() {
                       {project.frontmatter.shortDescription}
                     </p>
                   </div>
-                </Link>
+                </ForesightLink>
               </li>
             );
           })}

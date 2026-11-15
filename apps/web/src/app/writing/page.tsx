@@ -3,6 +3,7 @@ import { draftMode } from "next/headers";
 import Link from "next/link";
 
 import Container from "~/components/container";
+import { ForesightLink } from "~/components/foresight-link";
 import { getAllWritings } from "~/lib/content";
 
 export const metadata: Metadata = {
@@ -39,13 +40,12 @@ export default async function WritingPage() {
         <ul className="list-inside list-disc space-y-2 text-foreground/90">
           {writings.map((writing) => (
             <li key={writing.slug} className="text-base md:text-lg">
-              <Link
+              <ForesightLink
                 href={`/writing/${writing.slug}`}
-                prefetch={true}
                 className="transition-opacity hover:underline hover:underline-offset-2 hover:opacity-80"
               >
                 {writing.frontmatter.title as string}
-              </Link>
+              </ForesightLink>
             </li>
           ))}
         </ul>

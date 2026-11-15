@@ -12,6 +12,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@foresightjs/react": "^1.0.0",
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
     "@next/mdx": "^16.4.6",
@@ -35,6 +36,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
     "geist": "^1.7.2",
+    "js.foresight": "^4.2.1",
     "mdast": "^3.0.0",
     "next": "16.4.6",
     "next-mdx-remote": "^6.0.0",
