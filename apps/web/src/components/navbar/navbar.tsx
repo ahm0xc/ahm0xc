@@ -1,8 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useTheme } from "next-themes";
 
 import { useHotkeys } from "~/hooks/use-hotkey/use-hotkey";
@@ -22,15 +20,15 @@ interface NavItem {
 }
 
 export default function Navbar() {
-  const pathname = usePathname();
+  const { pathname } = useLocation();
   const { resolvedTheme, setTheme } = useTheme();
   const mounted = useMounted();
-  const router = useRouter();
+  const navigate = useNavigate();
 
   useHotkeys([
-    ["h", () => router.push("/")],
-    ["a", () => router.push("/apps")],
-    ["w", () => router.push("/writing")],
+    ["h", () => navigate({ to: "/" })],
+    ["a", () => navigate({ to: "/apps" })],
+    ["w", () => navigate({ to: "/writing" })],
   ]);
 
   const navItems: NavItem[] = [
@@ -62,7 +60,7 @@ export default function Navbar() {
   return (
     <nav className="absolute top-0 right-0 left-0 z-10">
       <Container className="flex w-full items-center justify-between py-2 pt-6">
-        <Link href="/">
+        <Link to="/">
           <Logo className="size-6 text-foreground" />
         </Link>
 
@@ -88,7 +86,7 @@ export default function Navbar() {
 function NavbarItem({ title, href, isActive, shortcut, hidden }: NavItem) {
   if (hidden) return;
   return (
-    <Link href={href}>
+    <Link to={href as never}>
       <button
         type="button"
         className={cn(

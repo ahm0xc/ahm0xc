@@ -13,10 +13,11 @@
 /prisma/db.sqlite-journal
 db.sqlite
 
-# next.js
+# build output
 /.next/
+/dist/
+/.output/
 /out/
-next-env.d.ts
 
 # production
 /build

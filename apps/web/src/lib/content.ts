@@ -1,5 +1,9 @@
+import { createElement } from "react";
+import * as runtime from "react/jsx-runtime";
+
+import { evaluate } from "@mdx-js/mdx";
 import fs from "fs/promises";
-import { compileMDX } from "next-mdx-remote/rsc";
+import matter from "gray-matter";
 import path from "path";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
@@ -41,19 +45,8 @@ export async function getWritingBySlug(slug: string) {
   );
   const source = await fs.readFile(filePath, "utf8");
 
+  const { content, frontmatter } = await compileContent(source);
   const toc = await extractToc(source);
-
-  const { content, frontmatter } = await compileMDX({
-    source,
-    options: {
-      parseFrontmatter: true,
-      mdxOptions: {
-        remarkPlugins: [remarkGfm, remarkHighlight],
-        rehypePlugins: [rehypeSlug],
-      },
-    },
-    components: mdxComponents,
-  });
 
   const validatedFrontmatter = writingFrontmatterSchema.safeParse(frontmatter);
 
@@ -131,19 +124,8 @@ export async function getProjectBySlug(slug: string) {
   );
   const source = await fs.readFile(filePath, "utf8");
 
+  const { content, frontmatter } = await compileContent(source);
   const toc = await extractToc(source);
-
-  const { content, frontmatter } = await compileMDX({
-    source,
-    options: {
-      parseFrontmatter: true,
-      mdxOptions: {
-        remarkPlugins: [remarkGfm, remarkHighlight],
-        rehypePlugins: [rehypeSlug],
-      },
-    },
-    components: mdxComponents,
-  });
 
   const validatedFrontmatter = projectFrontmatterSchema.safeParse(frontmatter);
 
@@ -158,6 +140,26 @@ export async function getProjectBySlug(slug: string) {
     frontmatter: validatedFrontmatter.data,
     slug,
     toc,
+  };
+}
+
+async function compileContent(source: string) {
+  const parsed = matter(source);
+  const normalizedFrontmatter = Object.fromEntries(
+    Object.entries(parsed.data).map(([key, value]) => [
+      key,
+      value instanceof Date ? value.toISOString().slice(0, 10) : value,
+    ])
+  );
+  const { default: Content } = await evaluate(parsed.content, {
+    ...runtime,
+    remarkPlugins: [remarkGfm, remarkHighlight],
+    rehypePlugins: [rehypeSlug],
+  });
+
+  return {
+    content: createElement(Content, { components: mdxComponents }),
+    frontmatter: normalizedFrontmatter,
   };
 }
 

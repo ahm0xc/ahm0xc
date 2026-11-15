@@ -1,7 +1,5 @@
 import * as React from "react";
 
-import Link from "next/link";
-
 import Container from "~/components/container";
 import { Icons } from "~/components/icons";
 import Signature from "~/components/signature";
@@ -50,7 +48,7 @@ const Footer: React.FC = () => {
             <Signature />
           </div>
           <div className="flex items-center gap-4">
-            <Link
+            <a
               href="https://x.com/ahm0xc"
               aria-label="X (Twitter)"
               target="_blank"
@@ -58,8 +56,8 @@ const Footer: React.FC = () => {
               className="text-muted-foreground transition-colors hover:text-foreground"
             >
               <Icons.twitter className="size-4" />
-            </Link>
-            <Link
+            </a>
+            <a
               href="https://www.linkedin.com/in/ahm0xc/"
               aria-label="LinkedIn"
               target="_blank"
@@ -67,7 +65,7 @@ const Footer: React.FC = () => {
               className="text-muted-foreground transition-colors hover:text-foreground"
             >
               <Icons.linkedin className="size-5" />
-            </Link>
+            </a>
           </div>
         </div>
       </footer>

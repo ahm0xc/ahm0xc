@@ -8,6 +8,5 @@ interface ImageProps {
 }
 
 function Image(props: ImageProps) {
-  // eslint-disable-next-line @next/next/no-img-element
   return <img src={props.src} className="rounded-2xl" alt="" />;
 }
