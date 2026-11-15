@@ -19,26 +19,20 @@
     /* Strictness */
     "strict": true,
     "noUncheckedIndexedAccess": true,
+    "types": ["vite/client"],
     "noEmit": true,
     /* Base Options: */
     "esModuleInterop": true,
     "isolatedModules": true,
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "plugins": [
-      {
-        "name": "next",
-      },
-    ],
   },
   "include": [
-    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "**/*.cjs",
     "**/*.js",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
+    "src/routeTree.gen.ts",
   ],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "dist", ".output"],
 }

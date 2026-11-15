@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@tanstack/react-router";
 
 import type { TocItem } from "~/lib/toc-utils";
 import { cn } from "~/lib/utils";
@@ -27,7 +27,8 @@ export function Toc({ items, className }: TocProps) {
         {items.map((item) => (
           <li key={item.id}>
             <Link
-              href={`#${item.id}`}
+              to="."
+              hash={item.id}
               className={cn(
                 "block text-foreground/60 transition-colors hover:text-foreground",
                 "hover:underline",

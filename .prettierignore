@@ -75,6 +75,8 @@ jspm_packages/
 
 # Next.js build output
 .next
+.output
+apps/web/src/routeTree.gen.ts
 
 # Nuxt.js build / generate output
 .nuxt

@@ -2,10 +2,8 @@
 
 import type { ReactNode } from "react";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-
 import { useForesight } from "@foresightjs/react";
+import { Link, useRouter } from "@tanstack/react-router";
 
 interface ForesightLinkProps {
   href: string;
@@ -20,11 +18,16 @@ export function ForesightLink({
 }: ForesightLinkProps) {
   const router = useRouter();
   const { elementRef } = useForesight<HTMLAnchorElement>({
-    callback: () => router.prefetch(href),
+    callback: () => router.preloadRoute({ to: href as never }),
   });
 
   return (
-    <Link href={href} ref={elementRef} prefetch={false} className={className}>
+    <Link
+      to={href as never}
+      ref={elementRef}
+      preload={false}
+      className={className}
+    >
       {children}
     </Link>
   );
