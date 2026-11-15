@@ -18,6 +18,9 @@ const projectRoutes = readdirSync(
   .map((file) => `/projects/${file.replace(/\.mdx$/, "")}`);
 
 export default defineConfig({
+  server: {
+    allowedHosts: [".ts.net", "localhost", "127.0.0.1"],
+  },
   resolve: { tsconfigPaths: true },
   plugins: [
     tanstackStart({
