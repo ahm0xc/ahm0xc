@@ -1,15 +1,26 @@
-import { readdirSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import react from "@vitejs/plugin-react";
+import matter from "gray-matter";
 import { nitro } from "nitro/vite";
 import { defineConfig } from "vite";
+
+function readEntryFrontmatter(dir: string, file: string) {
+  return matter(
+    readFileSync(
+      new URL(`./src/content/${dir}/${file}`, import.meta.url),
+      "utf8"
+    )
+  ).data;
+}
 
 const writingRoutes = readdirSync(
   new URL("./src/content/writing/", import.meta.url)
 )
   .filter((file) => file.endsWith(".mdx"))
+  .filter((file) => !readEntryFrontmatter("writing", file).draft)
   .map((file) => `/writing/${file.replace(/\.mdx$/, "")}`);
 const projectRoutes = readdirSync(
   new URL("./src/content/project/", import.meta.url)
@@ -30,9 +41,14 @@ export default defineConfig({
         crawlLinks: false,
       },
       pages: [
-        ...["/", "/apps", "/projects", ...writingRoutes, ...projectRoutes].map(
-          (path) => ({ path, prerender: { enabled: true } })
-        ),
+        ...[
+          "/",
+          "/apps",
+          "/writing",
+          "/projects",
+          ...writingRoutes,
+          ...projectRoutes,
+        ].map((path) => ({ path, prerender: { enabled: true } })),
       ],
     }),
     nitro({ preset: process.env.VERCEL ? "vercel" : "node-server" }),

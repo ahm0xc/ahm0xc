@@ -2,6 +2,7 @@ import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 
 import Container from "~/components/container";
 import { Icons } from "~/components/icons";
+import { MdxArticle } from "~/components/mdx-article";
 import { Toc } from "~/components/toc";
 import { loadWriting, loadWritingSlugs } from "~/lib/route-content";
 import { cn } from "~/lib/utils";
@@ -62,13 +63,13 @@ function WritingArticle() {
         <p className="mt-2 text-sm text-foreground/80">
           By <Link to="/">Ahmed</Link>
         </p>
-        <article
+        <MdxArticle
           className={cn(
             "prose pt-6 prose-stone dark:prose-invert",
             "prose-headings:font-heading",
             "prose-h2:mt-12 prose-h2:mb-2"
           )}
-          dangerouslySetInnerHTML={{ __html: html }}
+          html={html}
         />
       </Container>
       <div className="hidden flex-1 lg:flex">

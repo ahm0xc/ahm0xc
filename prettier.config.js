@@ -14,7 +14,6 @@ const config = {
     "^(pnpm:(.*)$)|^(pnpm$)",
     "^(node:(.*)$)|^(node$)",
     "^(react/(.*)$)|^(react$)",
-    "^(next/(.*)$)|^(next$)",
     "^(react-native/(.*)$)|^(react-native$)",
     "^(expo/(.*)$)|^(expo$)",
     "<THIRD_PARTY_MODULES>",

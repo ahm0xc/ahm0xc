@@ -1,18 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { getProjectSlugs, getWritingSlugs } from "~/lib/content";
+import { getAllWritings, getProjectSlugs } from "~/lib/content";
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async ({ request }) => {
         const origin = "https://www.ahm0xc.me";
+        const writings = await getAllWritings();
         const paths = [
           "/",
           "/apps",
           "/writing",
           "/projects",
-          ...(await getWritingSlugs()).map((slug) => `/writing/${slug}`),
+          ...writings.map((writing) => `/writing/${writing.slug}`),
           ...(await getProjectSlugs()).map((slug) => `/projects/${slug}`),
         ];
         const body = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${paths

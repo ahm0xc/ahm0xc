@@ -10,7 +10,6 @@ node_modules/
 .pnp.js
 
 # Production builds
-.next/
 out/
 build/
 dist/
@@ -73,8 +72,6 @@ jspm_packages/
 .cache
 .parcel-cache
 
-# Next.js build output
-.next
 .output
 apps/web/src/routeTree.gen.ts
 
@@ -146,7 +143,6 @@ android/gradle/wrapper/gradle-wrapper.jar
 
 # TypeScript
 *.tsbuildinfo
-next-env.d.ts
 
 # PWA files
 **/public/sw.js

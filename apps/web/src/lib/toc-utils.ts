@@ -1,3 +1,4 @@
+import GithubSlugger from "github-slugger";
 import type { Root } from "mdast";
 import { remark } from "remark";
 import { visit } from "unist-util-visit";
@@ -10,6 +11,7 @@ export interface TocItem {
 
 export async function extractToc(source: string): Promise<TocItem[]> {
   const toc: TocItem[] = [];
+  const slugger = new GithubSlugger();
 
   const processor = remark().use(() => {
     return (tree: Root) => {
@@ -25,13 +27,7 @@ export async function extractToc(source: string): Promise<TocItem[]> {
           }
         });
 
-        // Generate ID from heading text (simple slugify)
-        const id = text
-          .toLowerCase()
-          .replace(/[^\w\s-]/g, "") // Remove special characters
-          .replace(/\s+/g, "-") // Replace spaces with hyphens
-          .replace(/-+/g, "-") // Replace multiple hyphens with single
-          .trim();
+        const id = slugger.slug(text);
 
         if (text && id) {
           toc.push({

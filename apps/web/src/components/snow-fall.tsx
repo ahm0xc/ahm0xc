@@ -1,5 +1,3 @@
-"use client";
-
 import { Suspense, lazy } from "react";
 
 import { useTheme } from "next-themes";

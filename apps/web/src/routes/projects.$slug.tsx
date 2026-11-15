@@ -2,6 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { formatDate } from "date-fns";
 
 import Container from "~/components/container";
+import { MdxArticle } from "~/components/mdx-article";
 import { loadProject, loadProjectSlugs } from "~/lib/route-content";
 import { cn } from "~/lib/utils";
 
@@ -112,12 +113,12 @@ function ProjectPage() {
         </div>
       </Container>
       <Container className="mt-10">
-        <article
+        <MdxArticle
           className={cn(
             "prose pt-6 prose-stone dark:prose-invert",
             "prose-h2:mt-12 prose-h2:mb-2"
           )}
-          dangerouslySetInnerHTML={{ __html: html }}
+          html={html}
         />
       </Container>
     </div>

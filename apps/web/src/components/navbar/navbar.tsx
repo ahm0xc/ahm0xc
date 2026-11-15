@@ -1,6 +1,9 @@
-"use client";
-
-import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import {
+  Link,
+  useLocation,
+  useMatchRoute,
+  useNavigate,
+} from "@tanstack/react-router";
 import { useTheme } from "next-themes";
 
 import { useHotkeys } from "~/hooks/use-hotkey/use-hotkey";
@@ -13,7 +16,7 @@ import Logo from "../logo";
 
 interface NavItem {
   title: string;
-  href: string;
+  href: "/" | "/apps" | "/writing";
   isActive: boolean;
   shortcut?: string;
   hidden?: boolean;
@@ -24,6 +27,7 @@ export default function Navbar() {
   const { resolvedTheme, setTheme } = useTheme();
   const mounted = useMounted();
   const navigate = useNavigate();
+  const matchRoute = useMatchRoute();
 
   useHotkeys([
     ["h", () => navigate({ to: "/" })],
@@ -31,27 +35,16 @@ export default function Navbar() {
     ["w", () => navigate({ to: "/writing" })],
   ]);
 
-  const navItems: NavItem[] = [
+  const navItems = [
     {
       title: "me",
       href: "/",
-      isActive: false,
       shortcut: "h",
       hidden: pathname === "/",
     },
-    {
-      title: "Apps",
-      href: "/apps",
-      isActive: pathname === "/apps",
-      shortcut: "a",
-    },
-    {
-      title: "writing",
-      href: "/writing",
-      isActive: pathname === "/writing",
-      shortcut: "w",
-    },
-  ];
+    { title: "Apps", href: "/apps", shortcut: "a" },
+    { title: "writing", href: "/writing", shortcut: "w" },
+  ] as const;
 
   function toggleTheme() {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
@@ -67,7 +60,13 @@ export default function Navbar() {
         <div className="">
           <div className="flex items-center justify-center gap-4">
             {navItems.map((item) => {
-              return <NavbarItem key={item.title} {...item} />;
+              return (
+                <NavbarItem
+                  key={item.title}
+                  {...item}
+                  isActive={!!matchRoute({ to: item.href, fuzzy: true })}
+                />
+              );
             })}
             <button onClick={toggleTheme} title="Toggle theme">
               {mounted && resolvedTheme === "dark" ? (
@@ -86,7 +85,7 @@ export default function Navbar() {
 function NavbarItem({ title, href, isActive, shortcut, hidden }: NavItem) {
   if (hidden) return;
   return (
-    <Link to={href as never}>
+    <Link to={href}>
       <button
         type="button"
         className={cn(
