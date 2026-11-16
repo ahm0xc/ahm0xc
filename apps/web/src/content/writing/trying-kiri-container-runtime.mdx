@@ -44,11 +44,20 @@ Normally when you run a container you're going through `dockerd`, `containerd`, 
 
 Kiri's path looks like this:
 
-```
+```text
 docker CLI ─┐
-compose ────┼─ Docker Engine API ─► kiri daemon ── vsock ──► guest agent (PID 1)
-buildx ─────┤                         owns the VM           clone3 → container
-kiri UI ────┘
+compose ────┤
+buildx ─────┼── Docker Engine API
+kiri UI ────┘          │
+                       ▼
+                  kiri daemon
+                  owns the VM
+                       │ vsock
+                       ▼
+              guest agent (PID 1)
+                       │ clone3
+                       ▼
+                   container
 ```
 
 Inside the VM, PID 1 is a ~900 KB Rust agent. To start a container it calls `clone3` once, puts the process into namespaces and a cgroup, and that's it. No runc, no shim, no dockerd inside the VM. The guest kernel is a custom 10 MB build.
