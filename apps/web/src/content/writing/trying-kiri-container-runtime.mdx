@@ -1,0 +1,125 @@
+---
+title: Trying Out Kiri
+date: 2026-11-16
+categories:
+  - dev-tools
+description: I ran my containers on Kiri for a few days. This is what actually changed, what didn't, and why I'm keeping the context around.
+---
+
+I've had Docker Desktop installed for so long that I don't hear it anymore.
+
+There's a pause before a container starts. You type `docker run`, you press enter, and there's this beat of nothing before the output shows up. I've been filling that beat with scrolling or refocusing my terminal for years. I genuinely thought that was just how containers worked.
+
+Then a video crossed my feed claiming some new runtime starts containers eight times faster than Docker Desktop. My first reaction was the usual one: sure, and it probably breaks half your tooling. I closed the tab.
+
+But it kept nagging me. So I installed **Kiri**, ran one command, and then sat there for a second because the command had already finished.
+
+## The thing that made me re-run it ten times
+
+Kiri is a container runtime built in Rust. You download it, it sets up its own `kiri` Docker context, and then you run Docker commands against it:
+
+```sh
+docker --context kiri run --rm alpine echo hello
+```
+
+That's it. That's the whole setup. I hadn't changed a config file, hadn't touched my Dockerfiles, hadn't moved off the `docker` CLI I already know.
+
+But the output appeared instantly. Not "fast" like a page loading fast. Instant like a shell builtin. I ran it again to make sure it wasn't a cache. Then again with a bigger image. Then I ran it maybe a dozen times in a row like an idiot, just watching it happen.
+
+The container starts and exits in about **2.5 milliseconds**. Docker Desktop takes around 213 ms for the same thing through the same API. OrbStack is even slower at 380 ms.
+
+|                | Docker Engine API | `docker` CLI |
+| -------------- | ----------------: | -----------: |
+| **Kiri**       |       **2.55 ms** |  **14.2 ms** |
+| Docker Desktop |            213 ms |       243 ms |
+| OrbStack       |            380 ms |       442 ms |
+
+That's the benchmark from the repo: `alpine` running `true` and then being removed, median of 30 runs, same `docker` CLI for all three.
+
+## Why it's fast, and why that surprised me
+
+I assumed the speed came from clever caching. It doesn't. It comes from deleting almost the entire stack between you and the container.
+
+Normally when you run a container you're going through `dockerd`, `containerd`, `runc`, a shim process per container, and then a VM on top of all that. Each of those pieces exists for a reason, but they all sit in the path.
+
+Kiri's path looks like this:
+
+```
+docker CLI ─┐
+compose ────┼─ Docker Engine API ─► kiri daemon ── vsock ──► guest agent (PID 1)
+buildx ─────┤                         owns the VM           clone3 → container
+kiri UI ────┘
+```
+
+Inside the VM, PID 1 is a ~900 KB Rust agent. To start a container it calls `clone3` once, puts the process into namespaces and a cgroup, and that's it. No runc, no shim, no dockerd inside the VM. The guest kernel is a custom 10 MB build.
+
+Reading that was the moment I actually got interested, because it wasn't marketing. It was just an honest answer to "where did the 200ms go". Someone removed the layers and the latency left with them.
+
+## I want to be honest about the number though
+
+Eight times faster sounds like something that should change your life. It doesn't, not entirely. This measures **starting a container**, not what happens inside it.
+
+If a container runs a 40-second build, Kiri doesn't make that build 8x faster. It just deletes the twenty seconds a day you spend waiting for the wrapper. Which is real, but it's not the same thing, and I don't think it's fair to let the headline imply otherwise.
+
+What actually changed for me was the shape of my habits. I used to avoid spinning up a fresh Postgres just to check something, because the startup cost made it feel like a decision. Now it doesn't. Same for those little `run --rm` one-liners I'd previously replace with a local script because Docker felt heavy for the job.
+
+The second number matters just as much: the VM sleeps after 60 seconds idle, the daemon stays around 15 MB, and it wakes in about 0.15 seconds. That's the difference between a tool sitting in my RAM all day and one that turns up when I call it.
+
+## Things I found while clicking around
+
+I went in expecting a runtime, so some of this genuinely caught me off guard.
+
+It gives every container a local domain. `http://<name>.kiri.local`, with HTTPS from Kiri's own certificate authority. I've lost more time than I'd like to admitting `localhost:49153` into a browser, so this one made me smile.
+
+It can also start a single-node Kubernetes cluster:
+
+```sh
+kiri k8s start
+```
+
+I've installed `kind` and `minikube` more times than I want to admit just to test a manifest. Having it as a subcommand of the thing I already had open felt a little excessive in a good way.
+
+There are Linux machines too, which are real VMs rather than containers pretending:
+
+```sh
+kiri machine create dev --distro ubuntu
+kiri machine shell dev
+```
+
+And the one I appreciated most, because it means whoever built this has switched container tools before:
+
+```sh
+kiri import
+```
+
+It brings images, volumes and containers over from OrbStack or Docker Desktop. Small thing. Huge amount of saved time.
+
+## Where it rubbed me the wrong way
+
+I don't want to write a piece that reads like an ad, so here's the other side.
+
+The builder isn't built in yet. buildx runs against Kiri today, but the native builder is on the roadmap, and until it lands, builds aren't as seamless as they are on Docker Desktop. If `docker compose build` is the centre of your day, check the current release before you move anything.
+
+It's also young. Docker Desktop has a decade of weird laptops baked into it. Kiri will have bugs Docker doesn't, purely because fewer people have hit them. I ran into nothing serious, but I'd be lying if I said I trusted it the way I trust a tool that's been on every CI machine in the world.
+
+And on Linux it runs straight on the kernel rather than in a VM, which is a different enough model that I'd want to read the docs before treating my experience on macOS as universal.
+
+## What I actually did with it
+
+I didn't uninstall Docker Desktop. That would've been a performative move.
+
+What I did was keep the `kiri` context and start reaching for it by default for scratch work: one-off containers, things I want to poke at and throw away, database containers for tests. Those are the cases where a 200ms pause a hundred times a day adds up to something I can actually feel.
+
+Anything that involves image building still goes through the old flow for now, until the builder lands.
+
+Trying it costs almost nothing, which is the reason I'd suggest it to anyone curious. It creates its own context, so Docker stays exactly where it is. Run one command with `--context kiri`, and if you don't like it, never type that flag again.
+
+## The thought I couldn't shake
+
+We accepted a long time ago that containers are cheap to run and expensive to _invoke_. That pause before the output, the little breath of nothing, is just how local development feels. Everyone knows it, nobody questions it.
+
+But it was never physics. It was a stack of processes, each one reasonable on its own, adding up to a delay nobody audited. Someone looked at that stack and removed most of it, and the delay disappeared with it.
+
+I've been thinking about how much of my tooling has that same unexamined pause in it. That's the part I got out of trying Kiri, more than the milliseconds.
+
+The name comes from the Igbo word _ntakịrị_, meaning small. Which is a better description of the project than anything I could write.
