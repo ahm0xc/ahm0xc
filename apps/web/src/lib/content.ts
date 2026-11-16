@@ -1,18 +1,70 @@
 import { createElement } from "react";
-import * as runtime from "react/jsx-runtime";
+import type { ComponentType } from "react";
 
-import { evaluate } from "@mdx-js/mdx";
-import fs from "fs/promises";
-import matter from "gray-matter";
-import path from "path";
-import rehypeSlug from "rehype-slug";
-import remarkGfm from "remark-gfm";
-import { highlight as remarkHighlight } from "remark-sugar-high";
 import * as z from "zod/mini";
 
 import { mdxComponents } from "~/components/mdx-components";
 
 import { extractToc } from "./toc-utils";
+
+interface MdxModule {
+  default: ComponentType<{ components: typeof mdxComponents }>;
+  frontmatter: unknown;
+}
+
+const writingModules = import.meta.glob<MdxModule>("../content/writing/*.mdx", {
+  eager: true,
+});
+const writingSources = import.meta.glob<string>("../content/writing/*.mdx", {
+  eager: true,
+  import: "default",
+  query: "?raw",
+});
+
+const projectModules = import.meta.glob<MdxModule>("../content/project/*.mdx", {
+  eager: true,
+});
+const projectSources = import.meta.glob<string>("../content/project/*.mdx", {
+  eager: true,
+  import: "default",
+  query: "?raw",
+});
+
+function slugFromPath(path: string) {
+  return (
+    path
+      .split("/")
+      .pop()
+      ?.replace(/\.mdx$/, "") ?? path
+  );
+}
+
+function findPath(modules: Record<string, MdxModule>, slug: string) {
+  const path = Object.keys(modules).find((key) => slugFromPath(key) === slug);
+
+  if (!path) throw new Error(`Content not found for ${slug}`);
+
+  return path;
+}
+
+async function loadEntry(
+  modules: Record<string, MdxModule>,
+  sources: Record<string, string>,
+  path: string
+) {
+  const module = modules[path];
+
+  if (!module) throw new Error(`Content not found for ${path}`);
+
+  const source = sources[path];
+
+  return {
+    content: createElement(module.default, { components: mdxComponents }),
+    frontmatter: module.frontmatter,
+    slug: slugFromPath(path),
+    toc: source ? await extractToc(source) : [],
+  };
+}
 
 export const WRITING_CATEGORIES = [
   "database",
@@ -31,37 +83,26 @@ export const writingFrontmatterSchema = z.object({
 });
 
 export async function getWritingSlugs(): Promise<string[]> {
-  const contentDir = path.join(process.cwd(), "src/content/writing");
-  const fileNames = await fs.readdir(contentDir);
-
-  return fileNames.map((fileName) => fileName.replace(/\.mdx$/, ""));
+  return Object.keys(writingModules).map(slugFromPath);
 }
 
 export async function getWritingBySlug(slug: string) {
-  const filePath = path.join(
-    process.cwd(),
-    "src/content/writing",
-    `${slug}.mdx`
+  const entry = await loadEntry(
+    writingModules,
+    writingSources,
+    findPath(writingModules, slug)
   );
-  const source = await fs.readFile(filePath, "utf8");
+  const validatedFrontmatter = writingFrontmatterSchema.safeParse(
+    entry.frontmatter
+  );
 
-  const { content, frontmatter } = await compileContent(source);
-  const toc = await extractToc(source);
-
-  const validatedFrontmatter = writingFrontmatterSchema.safeParse(frontmatter);
-
-  if (!validatedFrontmatter.success || validatedFrontmatter.error) {
+  if (!validatedFrontmatter.success) {
     throw new Error(
       `Invalid frontmatter for ${slug} - ${validatedFrontmatter.error.message}`
     );
   }
 
-  return {
-    content,
-    frontmatter: validatedFrontmatter.data,
-    slug,
-    toc,
-  };
+  return { ...entry, frontmatter: validatedFrontmatter.data };
 }
 
 interface GetAllWritingsBlog {
@@ -71,29 +112,28 @@ interface GetAllWritingsBlog {
 export async function getAllWritings(
   { includeDraft }: GetAllWritingsBlog = { includeDraft: false }
 ) {
-  const slugs = await getWritingSlugs();
   const writings = await Promise.all(
-    slugs.map(async (slug) => await getWritingBySlug(slug))
+    Object.keys(writingModules).map(async (path) => {
+      const parsed = writingFrontmatterSchema.safeParse(
+        writingModules[path]?.frontmatter
+      );
+
+      if (!parsed.success) return null;
+      if (parsed.data.draft && !includeDraft) return null;
+
+      const entry = await loadEntry(writingModules, writingSources, path);
+
+      return { ...entry, frontmatter: parsed.data };
+    })
   );
 
-  const validatedWritings = writings.filter((writing) => {
-    try {
-      writingFrontmatterSchema.parse(writing.frontmatter);
-      if (writing.frontmatter.draft && !includeDraft) return false;
-      return true;
-    } catch {
-      return false;
-    }
-  });
-
-  const sortedWritings = validatedWritings.sort((a, b) => {
-    return (
-      new Date(b.frontmatter.date).getTime() -
-      new Date(a.frontmatter.date).getTime()
+  return writings
+    .filter((writing) => writing !== null)
+    .sort(
+      (a, b) =>
+        new Date(b.frontmatter.date).getTime() -
+        new Date(a.frontmatter.date).getTime()
     );
-  });
-
-  return sortedWritings;
 }
 
 export const projectFrontmatterSchema = z.object({
@@ -110,80 +150,48 @@ export const projectFrontmatterSchema = z.object({
 });
 
 export async function getProjectSlugs(): Promise<string[]> {
-  const contentDir = path.join(process.cwd(), "src/content/project");
-  const fileNames = await fs.readdir(contentDir);
-
-  return fileNames.map((fileName) => fileName.replace(/\.mdx$/, ""));
+  return Object.keys(projectModules).map(slugFromPath);
 }
 
 export async function getProjectBySlug(slug: string) {
-  const filePath = path.join(
-    process.cwd(),
-    "src/content/project",
-    `${slug}.mdx`
+  const entry = await loadEntry(
+    projectModules,
+    projectSources,
+    findPath(projectModules, slug)
   );
-  const source = await fs.readFile(filePath, "utf8");
+  const validatedFrontmatter = projectFrontmatterSchema.safeParse(
+    entry.frontmatter
+  );
 
-  const { content, frontmatter } = await compileContent(source);
-  const toc = await extractToc(source);
-
-  const validatedFrontmatter = projectFrontmatterSchema.safeParse(frontmatter);
-
-  if (!validatedFrontmatter.success || validatedFrontmatter.error) {
+  if (!validatedFrontmatter.success) {
     throw new Error(
       `Invalid frontmatter for ${slug} - ${validatedFrontmatter.error.message}`
     );
   }
 
-  return {
-    content,
-    frontmatter: validatedFrontmatter.data,
-    slug,
-    toc,
-  };
-}
-
-async function compileContent(source: string) {
-  const parsed = matter(source);
-  const normalizedFrontmatter = Object.fromEntries(
-    Object.entries(parsed.data).map(([key, value]) => [
-      key,
-      value instanceof Date ? value.toISOString().slice(0, 10) : value,
-    ])
-  );
-  const { default: Content } = await evaluate(parsed.content, {
-    ...runtime,
-    remarkPlugins: [remarkGfm, remarkHighlight],
-    rehypePlugins: [rehypeSlug],
-  });
-
-  return {
-    content: createElement(Content, { components: mdxComponents }),
-    frontmatter: normalizedFrontmatter,
-  };
+  return { ...entry, frontmatter: validatedFrontmatter.data };
 }
 
 export async function getAllProjects() {
-  const slugs = await getProjectSlugs();
   const projects = await Promise.all(
-    slugs.map(async (slug) => await getProjectBySlug(slug))
+    Object.keys(projectModules).map(async (path) => {
+      const parsed = projectFrontmatterSchema.safeParse(
+        projectModules[path]?.frontmatter
+      );
+
+      if (!parsed.success) return null;
+
+      const entry = await loadEntry(projectModules, projectSources, path);
+
+      return { ...entry, frontmatter: parsed.data };
+    })
   );
 
-  const validatedProjects = projects.filter((project) => {
-    try {
-      projectFrontmatterSchema.parse(project.frontmatter);
-      return true;
-    } catch {
-      return false;
-    }
-  });
-
-  const sortedProjects = validatedProjects.sort((a, b) => {
-    return (
-      new Date(b.frontmatter.dateStart).getTime() -
-      new Date(a.frontmatter.dateStart).getTime()
+  return projects
+    .filter((project) => project !== null)
+    .sort(
+      (a, b) =>
+        new Date(b.frontmatter.dateStart).getTime() -
+        new Date(a.frontmatter.dateStart).getTime()
     );
-  });
-
-  return sortedProjects;
 }

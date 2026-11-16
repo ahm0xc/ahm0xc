@@ -7,6 +7,8 @@ import react from "@vitejs/plugin-react";
 import matter from "gray-matter";
 import { defineConfig } from "vite";
 
+import { mdx } from "./vite-mdx-plugin";
+
 function readEntryFrontmatter(dir: string, file: string) {
   return matter(
     readFileSync(
@@ -52,6 +54,7 @@ export default defineConfig({
       ],
     }),
     cloudflare({ viteEnvironment: { name: "ssr" } }),
+    mdx(),
     react(),
     tailwindcss(),
   ],
