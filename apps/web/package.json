@@ -7,7 +7,8 @@
     "build": "vite build",
     "dev": "vite --host 0.0.0.0 --port 3000",
     "preview": "vite preview --host 0.0.0.0 --port 3000",
-    "start": "node .output/server/index.mjs",
+    "deploy": "pnpm run build && wrangler deploy",
+    "cf-typegen": "wrangler types",
     "check-types": "vite build && tsc --noEmit"
   },
   "dependencies": {
@@ -59,6 +60,7 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.69.1",
     "@repo/typescript-config": "workspace:*",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.5",
@@ -68,9 +70,9 @@
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
     "@vitejs/plugin-react": "^6.3.0",
-    "nitro": "npm:nitro-nightly@3.0.1-20261111-232659-0f2a7f49",
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.3",
-    "vite": "^8.3.8"
+    "vite": "^8.3.8",
+    "wrangler": "^4.162.0"
   }
 }
