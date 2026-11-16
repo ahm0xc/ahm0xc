@@ -60,27 +60,12 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.2.16
         version: 1.4.1(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@repo/trpc':
-        specifier: workspace:*
-        version: link:../../packages/trpc
-      '@tanstack/react-query':
-        specifier: ^5.101.4
-        version: 5.107.1(@types/react@19.2.18)(react@19.2.8)
       '@tanstack/react-router':
         specifier: ^1.170.46
         version: 1.170.46(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@tanstack/react-start':
         specifier: ^1.169.5
         version: 1.169.5(esbuild@0.28.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rolldown@1.2.19)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
-      '@trpc/client':
-        specifier: ^11.18.0
-        version: 11.28.0(@trpc/server@11.28.0(next@16.4.6(@babel/core@7.29.13)(@types/node@26.6.6)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3))(typescript@6.0.3)
-      '@trpc/react-query':
-        specifier: ^11.18.0
-        version: 11.28.0(@tanstack/react-query@5.107.1(@types/react@19.2.18)(react@19.2.8))(@trpc/client@11.28.0(@trpc/server@11.28.0(next@16.4.6(@babel/core@7.29.13)(@types/node@26.6.6)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3))(typescript@6.0.3))(@trpc/server@11.28.0(next@16.4.6(@babel/core@7.29.13)(@types/node@26.6.6)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3))(react@19.2.8)(typescript@6.0.3)
-      '@trpc/server':
-        specifier: ^11.18.0
-        version: 11.28.0(next@16.4.6(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3)
       '@vercel/analytics':
         specifier: ^2.0.1
         version: 2.0.1(next@16.4.6(@babel/core@7.29.13)(@types/node@26.6.6)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)
@@ -141,9 +126,6 @@ importers:
       remark-sugar-high:
         specifier: ^0.6.3
         version: 0.6.3
-      superjson:
-        specifier: ^2.2.6
-        version: 2.2.6
       tailwind-merge:
         specifier: ^3.6.0
         version: 3.7.0
@@ -217,25 +199,6 @@ importers:
       typescript:
         specifier: latest
         version: 7.0.2
-
-  packages/trpc:
-    dependencies:
-      '@trpc/server':
-        specifier: ^11.18.0
-        version: 11.28.0(next@16.4.6(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3)
-      superjson:
-        specifier: ^2.2.6
-        version: 2.2.6
-      zod:
-        specifier: ^4.4.3
-        version: 4.6.7
-    devDependencies:
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      typescript:
-        specifier: ^6.0.3
-        version: 6.0.3
 
   packages/typescript-config: {}
 
@@ -1372,18 +1335,6 @@ packages:
     resolution: {integrity: sha512-w1+YvwmTkwt5n8yUqEH3IWZ9DsmorCZW/EQ3KYHnqEgIkOZpH54NvW6/Epq3Dzb8H0ifIeYX8PExvrNLIH5FIA==}
     engines: {node: '>=20.19'}
 
-  '@tanstack/query-core@5.107.1':
-    resolution: {integrity: sha512-PSyAik11oQBEVOiVy5hjZWHmoUqOXqK1WYy4v55mcxozEfKaQgpUMsgnXhWjuESzSht8JfzqMS1m6M/9CpNgvg==}
-
-  '@tanstack/react-query@5.107.1':
-    resolution: {integrity: sha512-udCOOLp3ZAheUrIHLCe+ZZge6nr2ZUrGMSWcCuXsjY1Bf2JeeE09oxst97PILiCY6N8xo/7bIo3Hvz13zh06FA==}
-    peerDependencies:
-      '@types/react': ^18 || ^19
-      react: ^18 || ^19
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-
   '@tanstack/react-router@1.170.46':
     resolution: {integrity: sha512-ez1iNIhsPjGlaDHg3BXWs67EWVIYzB2tbopEHYDESdkO7owgkGb5de52+5Kv2v1fxdkggcNzo35bdk4arTVGQw==}
     engines: {node: '>=20.19'}
@@ -1530,42 +1481,6 @@ packages:
       prettier-plugin-svelte:
         optional: true
       svelte:
-        optional: true
-
-  '@trpc/client@11.28.0':
-    resolution: {integrity: sha512-uaj/19rUZKcUkQHAw8mBpjHeR5N/SJyCEy1HPPOC0fpgfV7Zz3cXbz/L9Tqhy+0YMlHwb0PuFGEo2krNjV+Sng==}
-    peerDependencies:
-      '@trpc/server': 11.28.0
-      typescript: '>=5.7.2'
-
-  '@trpc/react-query@11.28.0':
-    resolution: {integrity: sha512-j+wMshdCMYKBCvn7QvdpiQgDRszQYN/f+CCYC/8fobyp+AIpRf3p9sG5ujp5vMUVdjYbrlGp1IvoCFzCjBaacQ==}
-    peerDependencies:
-      '@tanstack/react-query': ^5.80.3
-      '@trpc/client': 11.28.0
-      '@trpc/server': 11.28.0
-      react: '>=18.2.0'
-      typescript: '>=5.7.2'
-
-  '@trpc/server@11.28.0':
-    resolution: {integrity: sha512-jj/JplNMKCyNZChmOxYRVnN4vNsS1zvLEnFfPkuvoYmrouKMuFNi4zaIMn1lDx6yyuuru/e5+rjcrBrIGc3p4g==}
-    peerDependencies:
-      '@types/aws-lambda': '*'
-      '@types/express': '*'
-      '@types/ws': '*'
-      fastify: '*'
-      next: '*'
-      typescript: '>=5.7.2'
-    peerDependenciesMeta:
-      '@types/aws-lambda':
-        optional: true
-      '@types/express':
-        optional: true
-      '@types/ws':
-        optional: true
-      fastify:
-        optional: true
-      next:
         optional: true
 
   '@turbo/darwin-64@2.11.11':
@@ -1945,10 +1860,6 @@ packages:
 
   cookie@1.1.1:
     resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
-    engines: {node: '>=18'}
-
-  copy-anything@4.1.5:
-    resolution: {integrity: sha512-vePst2VLTSqPglW7Q98VwFpGiGpOHTyXIo81MO5VyLecA5zMbZw/P/V1vmwD1jksa2iJpn/YkDrJ3XhTfzUyhQ==}
     engines: {node: '>=18'}
 
   css-background-parser@0.1.0:
@@ -2844,10 +2755,6 @@ packages:
 
   sugar-high@1.3.0:
     resolution: {integrity: sha512-/harylV2L7swuV8319SXHiXj8yJOCGNcVcKJXk9WpWNXoHfqD9uAZ1KAUDGcZXSNNeGMT0rnDYAwEk6zXte1sw==}
-
-  superjson@2.2.6:
-    resolution: {integrity: sha512-H+ue8Zo4vJmV2nRjpx86P35lzwDT3nItnIsocgumgr0hHMQ+ZGq5vrERg9kJBo5AWGmxZDhzDo+WVIJqkB0cGA==}
-    engines: {node: '>=16'}
 
   supports-color@10.2.2:
     resolution: {integrity: sha512-SS+jx45GF1QjgEXQx4NJZV9ImqmO2NPz5FNsIHrsDjh2YsHnawpan7SNQ1o8NuhrbHZy9AZhIoCUiCeaW/C80g==}
@@ -4132,15 +4039,6 @@ snapshots:
 
   '@tanstack/history@1.162.5': {}
 
-  '@tanstack/query-core@5.107.1': {}
-
-  '@tanstack/react-query@5.107.1(@types/react@19.2.18)(react@19.2.8)':
-    dependencies:
-      '@tanstack/query-core': 5.107.1
-      react: 19.2.8
-    optionalDependencies:
-      '@types/react': 19.2.18
-
   '@tanstack/react-router@1.170.46(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       '@tanstack/history': 1.162.5
@@ -4361,25 +4259,6 @@ snapshots:
       prettier: 3.10.1
     transitivePeerDependencies:
       - supports-color
-
-  '@trpc/client@11.28.0(@trpc/server@11.28.0(next@16.4.6(@babel/core@7.29.13)(@types/node@26.6.6)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3))(typescript@6.0.3)':
-    dependencies:
-      '@trpc/server': 11.28.0(next@16.4.6(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3)
-      typescript: 6.0.3
-
-  '@trpc/react-query@11.28.0(@tanstack/react-query@5.107.1(@types/react@19.2.18)(react@19.2.8))(@trpc/client@11.28.0(@trpc/server@11.28.0(next@16.4.6(@babel/core@7.29.13)(@types/node@26.6.6)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3))(typescript@6.0.3))(@trpc/server@11.28.0(next@16.4.6(@babel/core@7.29.13)(@types/node@26.6.6)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3))(react@19.2.8)(typescript@6.0.3)':
-    dependencies:
-      '@tanstack/react-query': 5.107.1(@types/react@19.2.18)(react@19.2.8)
-      '@trpc/client': 11.28.0(@trpc/server@11.28.0(next@16.4.6(@babel/core@7.29.13)(@types/node@26.6.6)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3))(typescript@6.0.3)
-      '@trpc/server': 11.28.0(next@16.4.6(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3)
-      react: 19.2.8
-      typescript: 6.0.3
-
-  '@trpc/server@11.28.0(next@16.4.6(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@6.0.3)':
-    dependencies:
-      typescript: 6.0.3
-    optionalDependencies:
-      next: 16.4.6(@babel/core@7.29.13)(@types/node@26.6.6)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
 
   '@turbo/darwin-64@2.11.11':
     optional: true
@@ -4615,8 +4494,6 @@ snapshots:
   cookie-es@3.1.1: {}
 
   cookie@1.1.1: {}
-
-  copy-anything@4.1.5: {}
 
   css-background-parser@0.1.0: {}
 
@@ -5844,10 +5721,6 @@ snapshots:
     optional: true
 
   sugar-high@1.3.0: {}
-
-  superjson@2.2.6:
-    dependencies:
-      copy-anything: 4.1.5
 
   supports-color@10.2.2: {}
 

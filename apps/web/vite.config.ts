@@ -7,7 +7,7 @@ import react from "@vitejs/plugin-react";
 import matter from "gray-matter";
 import { defineConfig } from "vite";
 
-import { mdx } from "./vite-mdx-plugin";
+import { mdx } from "./vite-mdx-plugin.ts";
 
 function readEntryFrontmatter(dir: string, file: string) {
   return matter(

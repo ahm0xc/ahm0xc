@@ -15,7 +15,6 @@ import { ThemeProvider } from "~/components/theme-provider";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import { cn } from "~/lib/utils";
 import "~/styles/globals.css";
-import { TRPCReactProvider } from "~/trpc/react";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -60,17 +59,15 @@ function RootDocument() {
       >
         <Analytics />
         <SpeedInsights />
-        <TRPCReactProvider>
-          <ThemeProvider>
-            <TooltipProvider>
-              <Navbar />
-              <main className="w-full flex-1">
-                <Outlet />
-              </main>
-              <Footer />
-            </TooltipProvider>
-          </ThemeProvider>
-        </TRPCReactProvider>
+        <ThemeProvider>
+          <TooltipProvider>
+            <Navbar />
+            <main className="w-full flex-1">
+              <Outlet />
+            </main>
+            <Footer />
+          </TooltipProvider>
+        </ThemeProvider>
         <Scripts />
       </body>
     </html>
