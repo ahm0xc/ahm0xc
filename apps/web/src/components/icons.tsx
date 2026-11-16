@@ -160,6 +160,59 @@ export const Icons = {
       />
     </svg>
   ),
+  list: (props: IconProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width={24}
+      height={24}
+      color="currentColor"
+      fill="none"
+      {...props}
+    >
+      <path
+        d="M9 6H20M9 12H20M9 18H20"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M4 6H4.01M4 12H4.01M4 18H4.01"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  ),
+  boat: (props: IconProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width={24}
+      height={24}
+      color="currentColor"
+      fill="none"
+      {...props}
+    >
+      <path
+        d="M12 3.2V15.5"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      />
+      <path d="M10.6 5.6 5.9 14.2H10.6Z" fill="currentColor" />
+      <path d="M13.4 6.6 18.1 14.2H13.4Z" fill="currentColor" />
+      <path
+        d="M3.2 16H20.8L18.8 19.1C18.4 19.7 17.8 20.1 17.1 20.1H6.9C6.2 20.1 5.6 19.7 5.2 19.1Z"
+        fill="currentColor"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinejoin="round"
+      />
+    </svg>
+  ),
   snow: (props: IconProps) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"

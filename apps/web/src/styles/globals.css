@@ -182,6 +182,26 @@ pre:has(> code) {
   @apply rounded-2xl border bg-neutral-100! dark:bg-neutral-900!;
 }
 
+.toc-boat {
+  animation: toc-bob 3.6s ease-in-out infinite;
+}
+
+@keyframes toc-bob {
+  0%,
+  100% {
+    transform: translateY(-0.5px) rotate(-2.5deg);
+  }
+  50% {
+    transform: translateY(0.5px) rotate(2.5deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toc-boat {
+    animation: none;
+  }
+}
+
 .boat-scene {
   position: relative;
   height: 7rem;
