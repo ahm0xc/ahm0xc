@@ -23,7 +23,11 @@
     "react/jsx-key": "error",
     "react/react-in-jsx-scope": "off",
     "react/set-state-in-effect": "off",
-    "react/no-array-index-key": "off"
+    "react/no-array-index-key": "off",
+    "import/no-unassigned-import": [
+      "warn",
+      { "allow": ["**/*.css", "@fontsource-variable/**"] }
+    ]
   },
   "overrides": [
     {

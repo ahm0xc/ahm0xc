@@ -105,7 +105,7 @@ function useRows(
 
   useEffect(() => {
     const list = ref.current;
-    if (!list) return;
+    if (!list || !key) return;
 
     const measure = () => {
       const elements = Array.from(

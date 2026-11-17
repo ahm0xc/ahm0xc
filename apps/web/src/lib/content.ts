@@ -129,7 +129,7 @@ export async function getAllWritings(
 
   return writings
     .filter((writing) => writing !== null)
-    .sort(
+    .toSorted(
       (a, b) =>
         new Date(b.frontmatter.date).getTime() -
         new Date(a.frontmatter.date).getTime()
@@ -189,7 +189,7 @@ export async function getAllProjects() {
 
   return projects
     .filter((project) => project !== null)
-    .sort(
+    .toSorted(
       (a, b) =>
         new Date(b.frontmatter.dateStart).getTime() -
         new Date(a.frontmatter.dateStart).getTime()

@@ -1,27 +1,27 @@
 import * as React from "react";
 
-const Clock: React.FC = () => {
-  function checkTime() {
-    const date = new Date();
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
+function checkTime() {
+  const date = new Date();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
 
-    const hoursAngle = hours * (360 / 12);
-    const minutesAngle = minutes * 6;
-    const secondsAngle = seconds * 6;
+  const hoursAngle = hours * (360 / 12);
+  const minutesAngle = minutes * 6;
+  const secondsAngle = seconds * 6;
 
-    const hoursHand = document.getElementById("clock-hours-hand");
-    const minutesHand = document.getElementById("clock-minutes-hand");
-    const secondsHand = document.getElementById("clock-seconds-hand");
+  const hoursHand = document.getElementById("clock-hours-hand");
+  const minutesHand = document.getElementById("clock-minutes-hand");
+  const secondsHand = document.getElementById("clock-seconds-hand");
 
-    if (hoursHand && minutesHand && secondsHand) {
-      hoursHand.style.transform = `rotate(${hoursAngle}deg)`;
-      minutesHand.style.transform = `rotate(${minutesAngle}deg)`;
-      secondsHand.style.transform = `rotate(${secondsAngle}deg)`;
-    }
+  if (hoursHand && minutesHand && secondsHand) {
+    hoursHand.style.transform = `rotate(${hoursAngle}deg)`;
+    minutesHand.style.transform = `rotate(${minutesAngle}deg)`;
+    secondsHand.style.transform = `rotate(${secondsAngle}deg)`;
   }
+}
 
+const Clock: React.FC = () => {
   React.useEffect(() => {
     const interval = setInterval(checkTime, 1000);
     return () => clearInterval(interval);

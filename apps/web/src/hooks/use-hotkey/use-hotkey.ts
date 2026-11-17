@@ -1,10 +1,7 @@
 import { useEffect } from "react";
 
-import {
-  HotkeyItemOptions,
-  getHotkeyHandler,
-  getHotkeyMatcher,
-} from "./parse-hotkey";
+import type { HotkeyItemOptions } from "./parse-hotkey";
+import { getHotkeyHandler, getHotkeyMatcher } from "./parse-hotkey";
 
 export { getHotkeyHandler };
 export type { HotkeyItemOptions };
