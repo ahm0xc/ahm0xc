@@ -4,4 +4,5 @@ pre-push:
     - name: check-types
       run: pnpm run check-types
     - name: fmt
-      run: pnpm run fmt:check
+      glob: "*.{ts,tsx,js,jsx,mdx}"
+      run: pnpm exec oxfmt --check --no-error-on-unmatched-pattern {push_files}

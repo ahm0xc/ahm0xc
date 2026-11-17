@@ -1,0 +1,58 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 80,
+  "tabWidth": 2,
+  "semi": true,
+  "singleQuote": false,
+  "trailingComma": "es5",
+  "sortPackageJson": false,
+  "sortImports": {
+    "newlinesBetween": true,
+    "groups": [
+      "pnpm",
+      "builtin",
+      "react",
+      "reactNative",
+      "expo",
+      "external",
+      "types",
+      ["internal", "subpath", "style"],
+      ["parent", "sibling", "index"],
+      "unknown"
+    ],
+    "customGroups": [
+      {
+        "groupName": "pnpm",
+        "elementNamePattern": ["pnpm", "pnpm:*"]
+      },
+      {
+        "groupName": "react",
+        "elementNamePattern": ["react", "react/*"]
+      },
+      {
+        "groupName": "reactNative",
+        "elementNamePattern": ["react-native", "react-native/*"]
+      },
+      {
+        "groupName": "expo",
+        "elementNamePattern": ["expo", "expo/*"]
+      },
+      {
+        "groupName": "types",
+        "elementNamePattern": ["types"]
+      }
+    ]
+  },
+  "sortTailwindcss": {
+    "stylesheet": "./apps/web/src/styles/globals.css",
+    "functions": ["clsx", "cn"]
+  },
+  "ignorePatterns": [
+    "apps/web/src/routeTree.gen.ts",
+    "**/*.generated.*",
+    "public",
+    ".output",
+    ".vercel",
+    ".serena"
+  ]
+}
