@@ -1,0 +1,7 @@
+pre-push:
+  parallel: true
+  jobs:
+    - name: check-types
+      run: pnpm run check-types
+    - name: fmt
+      run: pnpm run fmt:check
