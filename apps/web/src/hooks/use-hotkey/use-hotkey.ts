@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import type { HotkeyItemOptions } from "./parse-hotkey";
 import { getHotkeyHandler, getHotkeyMatcher } from "./parse-hotkey";
@@ -31,14 +31,24 @@ function shouldFireEvent(
   return true;
 }
 
+const DEFAULT_TAGS_TO_IGNORE = ["INPUT", "TEXTAREA", "SELECT"];
+
 export function useHotkeys(
   hotkeys: HotkeyItem[],
-  tagsToIgnore: string[] = ["INPUT", "TEXTAREA", "SELECT"],
+  tagsToIgnore: string[] = DEFAULT_TAGS_TO_IGNORE,
   triggerOnContentEditable = false
 ) {
+  const hotkeysRef = useRef(hotkeys);
+  const tagsToIgnoreRef = useRef(tagsToIgnore);
+
+  useEffect(() => {
+    hotkeysRef.current = hotkeys;
+    tagsToIgnoreRef.current = tagsToIgnore;
+  });
+
   useEffect(() => {
     const keydownListener = (event: KeyboardEvent) => {
-      hotkeys.forEach(
+      hotkeysRef.current.forEach(
         ([
           hotkey,
           handler,
@@ -46,7 +56,11 @@ export function useHotkeys(
         ]) => {
           if (
             getHotkeyMatcher(hotkey, options.usePhysicalKeys)(event) &&
-            shouldFireEvent(event, tagsToIgnore, triggerOnContentEditable)
+            shouldFireEvent(
+              event,
+              tagsToIgnoreRef.current,
+              triggerOnContentEditable
+            )
           ) {
             if (options.preventDefault) {
               event.preventDefault();
@@ -61,5 +75,5 @@ export function useHotkeys(
     document.documentElement.addEventListener("keydown", keydownListener);
     return () =>
       document.documentElement.removeEventListener("keydown", keydownListener);
-  }, [hotkeys, triggerOnContentEditable, tagsToIgnore]);
+  }, [triggerOnContentEditable]);
 }

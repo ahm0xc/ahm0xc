@@ -1,12 +1,6 @@
 import type { AnchorHTMLAttributes } from "react";
 
-export const mdxComponents = {
-  a: Anchor,
-  hr: () => <hr className="my-8 border-t border-foreground/5" />,
-  Image,
-};
-
-function Anchor({
+export function MdxAnchor({
   href = "",
   children,
   ...props
@@ -26,11 +20,15 @@ function Anchor({
   );
 }
 
-interface ImageProps {
+export function MdxHr() {
+  return <hr className="my-8 border-t border-foreground/5" />;
+}
+
+interface MdxImageProps {
   src: string;
   alt?: string;
 }
 
-function Image({ src, alt = "" }: ImageProps) {
+export function MdxImage({ src, alt = "" }: MdxImageProps) {
   return <img src={src} className="rounded-2xl" alt={alt} loading="lazy" />;
 }

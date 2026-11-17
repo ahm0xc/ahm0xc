@@ -3,9 +3,15 @@ import type { ComponentType } from "react";
 
 import * as z from "zod/mini";
 
-import { mdxComponents } from "~/components/mdx-components";
+import { MdxAnchor, MdxHr, MdxImage } from "~/components/mdx-components";
 
 import { extractToc } from "./toc-utils";
+
+const mdxComponents = {
+  a: MdxAnchor,
+  hr: MdxHr,
+  Image: MdxImage,
+};
 
 interface MdxModule {
   default: ComponentType<{ components: typeof mdxComponents }>;
@@ -109,9 +115,9 @@ interface GetAllWritingsBlog {
   includeDraft?: boolean;
 }
 
-export async function getAllWritings(
-  { includeDraft }: GetAllWritingsBlog = { includeDraft: false }
-) {
+export async function getAllWritings({
+  includeDraft = false,
+}: GetAllWritingsBlog = {}) {
   const writings = await Promise.all(
     Object.keys(writingModules).map(async (path) => {
       const parsed = writingFrontmatterSchema.safeParse(

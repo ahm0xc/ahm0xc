@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export function useWindowEvent<K extends keyof WindowEventMap>(
   type: K,
@@ -17,8 +17,25 @@ export function useWindowEvent(
   listener: EventListenerOrEventListenerObject,
   options?: boolean | AddEventListenerOptions
 ) {
+  const listenerRef = useRef(listener);
+
   useEffect(() => {
-    window.addEventListener(type, listener, options);
-    return () => window.removeEventListener(type, listener, options);
-  }, [type, listener, options]);
+    listenerRef.current = listener;
+  });
+
+  useEffect(() => {
+    const handler: EventListener = (event) => {
+      const current = listenerRef.current;
+
+      if (typeof current === "function") {
+        current.call(window, event);
+        return;
+      }
+
+      current.handleEvent(event);
+    };
+
+    window.addEventListener(type, handler, options);
+    return () => window.removeEventListener(type, handler, options);
+  }, [type, options]);
 }
