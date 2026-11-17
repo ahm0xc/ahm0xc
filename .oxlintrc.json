@@ -1,0 +1,47 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "react", "jsx-a11y", "import", "oxc"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2024": true
+  },
+  "rules": {
+    "eslint/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+    ],
+    "typescript/consistent-type-imports": "warn",
+    "typescript/no-explicit-any": "warn",
+    "unicorn/filename-case": ["error", { "case": "kebabCase" }],
+    "unicorn/prefer-node-protocol": "error",
+    "eslint/no-underscore-dangle": "off",
+    "react/jsx-key": "error",
+    "react/react-in-jsx-scope": "off",
+    "react/set-state-in-effect": "off",
+    "react/no-array-index-key": "off"
+  },
+  "overrides": [
+    {
+      "files": ["**/mdx-article.tsx"],
+      "rules": {
+        "jsx-a11y/click-events-have-key-events": "off",
+        "jsx-a11y/no-noninteractive-element-interactions": "off"
+      }
+    }
+  ],
+  "ignorePatterns": [
+    "**/routeTree.gen.ts",
+    "**/*.generated.*",
+    "**/public/**",
+    "**/.output/**",
+    "**/.vercel/**",
+    "**/.serena/**",
+    "**/dist/**",
+    "**/worker-configuration.d.ts"
+  ]
+}

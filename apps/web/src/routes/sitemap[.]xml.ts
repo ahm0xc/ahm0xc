@@ -5,7 +5,7 @@ import { getAllWritings, getProjectSlugs } from "~/lib/content";
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
-      GET: async ({ request }) => {
+      GET: async () => {
         const origin = "https://www.ahm0xc.me";
         const writings = await getAllWritings();
         const paths = [

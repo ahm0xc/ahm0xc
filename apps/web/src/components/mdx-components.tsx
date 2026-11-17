@@ -8,15 +8,22 @@ export const mdxComponents = {
 
 function Anchor({
   href = "",
+  children,
   ...props
 }: AnchorHTMLAttributes<HTMLAnchorElement>) {
   if (href.startsWith("http")) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" {...props} />
+      <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+        {children}
+      </a>
     );
   }
 
-  return <a href={href} {...props} />;
+  return (
+    <a href={href} {...props}>
+      {children}
+    </a>
+  );
 }
 
 interface ImageProps {

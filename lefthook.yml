@@ -6,3 +6,6 @@ pre-push:
     - name: fmt
       glob: "*.{ts,tsx,js,jsx,mdx}"
       run: pnpm exec oxfmt --check --no-error-on-unmatched-pattern {push_files}
+    - name: lint
+      glob: "*.{ts,tsx,js,jsx,mjs,cjs}"
+      run: pnpm exec oxlint --no-error-on-unmatched-pattern {push_files}
