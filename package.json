@@ -10,6 +10,7 @@
     "check-types": "turbo check-types",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
+    "doctor": "pnpm --filter web run doctor",
     "fmt": "oxfmt \"apps/**/*.{ts,tsx,js,jsx,mdx}\" \"packages/**/*.{ts,tsx,js,jsx,mdx}\"",
     "fmt:check": "oxfmt --check \"apps/**/*.{ts,tsx,js,jsx,mdx}\" \"packages/**/*.{ts,tsx,js,jsx,mdx}\"",
     "prepare": "lefthook install"

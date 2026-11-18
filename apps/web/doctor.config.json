@@ -1,0 +1,16 @@
+{
+  "$schema": "https://react.doctor/schema/config.json",
+  "ignore": {
+    "files": ["dist/**", ".output/**"],
+    "overrides": [
+      {
+        "files": ["src/components/mdx-article.tsx"],
+        "rules": ["react-doctor/dangerous-html-sink"]
+      },
+      {
+        "files": ["src/routeTree.gen.ts"],
+        "rules": ["unicorn/filename-case"]
+      }
+    ]
+  }
+}

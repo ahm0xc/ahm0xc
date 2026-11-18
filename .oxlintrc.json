@@ -29,15 +29,6 @@
       { "allow": ["**/*.css", "@fontsource-variable/**"] }
     ]
   },
-  "overrides": [
-    {
-      "files": ["**/mdx-article.tsx"],
-      "rules": {
-        "jsx-a11y/click-events-have-key-events": "off",
-        "jsx-a11y/no-noninteractive-element-interactions": "off"
-      }
-    }
-  ],
   "ignorePatterns": [
     "**/routeTree.gen.ts",
     "**/*.generated.*",
